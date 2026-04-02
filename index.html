@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>EMP PARTS | Heavy Equipment & Excavator Spare Parts</title>
+    <meta name="description" content="EMP PARTS - OEM quality hydraulic pumps, travel motors, final drives, engine parts for CAT, KOMATSU, HITACHI, DOOSAN, HYUNDAI, VOLVO, SANY excavators. FOPFUJI hydraulic units, PME engine parts. Factory direct, fast global shipping.">
+    <meta name="keywords" content="hydraulic pump, travel motor, final drive, tm40, oil pump, liner kit, K3V112, engine parts, ISUZU parts, DOOSAN, HYUNDAI, HITACHI, VOLVO, SANY, FOPFUJI, PME, excavator parts, undercarriage parts, factory tour, instagram video">
+    <link rel="canonical" href="https://www.empparts.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #f97316; /* 工业橙 */
+            --dark: #0f172a;    /* 深海蓝黑 */
+            --secondary: #334155;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--secondary); line-height: 1.6; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        /* --- 高级导航栏 --- */
+        header { 
+            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #e2e8f0; padding: 12px 0;
+        }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo-group { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img { height: 48px; width: auto; }
+        .logo-text h1 { font-size: 1.5rem; font-weight: 800; color: var(--dark); line-height: 1; }
+        .logo-text p { font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; margin-top: 4px; }
+        
+        nav a { margin-left: 25px; text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        nav a:hover { color: var(--primary); }
+
+        /* --- 沉浸式 Hero Banner --- */
+        .hero { 
+            position: relative; height: 500px; background: var(--dark); 
+            display: flex; align-items: center; color: white; overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.6)), 
+                        url('https://www.empparts.com/template/default/images/banner1.jpg') center/cover;
+            transition: 10s ease;
+        }
+        .hero:hover .hero-bg { transform: scale(1.05); }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; }
+        .hero h2 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; border-left: 4px solid var(--primary); padding-left: 20px; }
+        .btn-cta { background: var(--primary); color: white; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; transition: 0.3s; box-shadow: 0 10px 20px rgba(249, 115, 22, 0.3); }
+        .btn-cta:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(249, 115, 22, 0.5); }
+
+        /* --- 产品卡片 --- */
+        .section-title { font-size: 2.2rem; font-weight: 800; margin: 60px 0 10px; text-align: center; color: var(--dark); }
+        .section-sub { text-align: center; color: #64748b; margin-bottom: 40px; }
+        .grid-6 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card { background: white; border-radius: 24px; padding: 30px; border: 1px solid #eef2f8; transition: 0.3s; text-align: center; position: relative; overflow: hidden; }
+        .card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: var(--shadow); }
+        .card img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 20px; transition: 0.4s; }
+        .card h3 { font-size: 1.3rem; margin-bottom: 10px; color: var(--dark); }
+        .tag-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 15px; }
+        .tag { background: #fff7ed; color: var(--primary); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 10px; border: 1px solid #ffedd5; }
+
+        /* --- 搜索热词云 --- */
+        .keyword-box { background: white; border-radius: 30px; padding: 40px; margin: 60px 0; border: 1px solid #eef2f8; text-align: center; }
+        .keyword-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 25px; }
+        .kw-item { background: #f1f5f9; padding: 8px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; color: var(--secondary); transition: 0.3s; border: 1px solid #e2e8f0; cursor: default; }
+        .kw-item:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* --- 关于我们 --- */
+        .about-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; margin: 80px 0; }
+        .about-text h3 { font-size: 2rem; margin-bottom: 20px; color: var(--dark); }
+        .about-text p { margin-bottom: 15px; color: #475569; }
+        .about-img { border-radius: 30px; overflow: hidden; box-shadow: var(--shadow); }
+        .about-img img { width: 100%; display: block; }
+
+        /* --- News & Vlog (支持图片/YouTube/Instagram) --- */
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 30px; margin: 40px 0; }
+        .news-card { background: white; border-radius: 24px; overflow: hidden; border: 1px solid #eef2f8; transition: 0.3s; }
+        .news-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+        .news-media { width: 100%; height: 220px; background: #f1f5f9; position: relative; }
+        .news-media img, .news-media iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
+        .news-badge { position: absolute; top: 12px; left: 12px; background: var(--primary); color: white; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 800; z-index: 2; }
+        .news-body { padding: 20px; }
+        .news-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
+        .news-date { font-size: 0.75rem; color: #64748b; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .news-excerpt { color: #475569; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.4; }
+
+        /* --- Quick Message --- */
+        .quick-msg { background: white; border-radius: 28px; padding: 40px; margin: 60px 0; border: 1px solid #eef2f8; }
+        .quick-msg h3 { font-size: 1.8rem; margin-bottom: 20px; text-align: center; color: var(--dark); }
+        .msg-form .form-group { margin-bottom: 16px; }
+        .msg-form input, .msg-form textarea { width: 100%; padding: 14px 18px; border: 1px solid #cbd5e1; border-radius: 40px; font-family: inherit; font-size: 1rem; }
+        .msg-status { margin-top: 12px; text-align: center; font-size: 0.85rem; }
+
+        /* --- 悬浮工具栏 --- */
+        .float-bar { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
+        .float-btn { width: 60px; height: 60px; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; text-decoration: none; transition: 0.4s; box-shadow: 0 10px 20px rgba(0,0,0,0.15); border: none; cursor: pointer; }
+        .float-btn:hover { transform: scale(1.1) rotate(5deg); }
+        .wa { background: #25d366; } .wc { background: #07c160; } .fb { background: #1877f2; } .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .st { background: #475569; }
+
+        /* --- 管理面板 (Admin Drawer) --- */
+        .admin-drawer { position: fixed; bottom: 100px; right: 30px; width: 480px; background: white; border-radius: 28px; padding: 25px; display: none; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 10000; border: 1px solid #eef2f8; max-height: 70vh; overflow-y: auto; }
+        .admin-drawer.show { display: block; }
+        .admin-drawer h4 { margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 12px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 5px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 16px; font-family: inherit; }
+        .btn-sm { padding: 6px 12px; border-radius: 30px; border: none; cursor: pointer; margin-right: 8px; font-weight: 600; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #f1c40f; color: #1e293b; }
+        .btn-primary { background: var(--primary); color: white; }
+
+        /* --- 密码模态框 --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 20000; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 32px; width: 320px; text-align: center; }
+        .modal-content input { margin: 15px 0; width: 100%; padding: 10px; border-radius: 40px; border: 1px solid #ccc; }
+
+        /* 页脚 */
+        .footer { background: var(--dark); color: #94a3b8; padding: 50px 0 30px; margin-top: 60px; text-align: center; }
+
+        @media (max-width: 768px) { .hero h2 { font-size: 2rem; } nav { display: none; } .about-wrap { grid-template-columns: 1fr; } .admin-drawer { width: calc(100% - 40px); right: 20px; } }
+    </style>
+</head>
+<body>
+
+<!-- 悬浮工具栏 -->
+<div class="float-bar">
+    <a href="https://wa.me/8615502421365" class="float-btn wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <div class="float-btn wc" id="wechatBtn"><i class="fab fa-weixin"></i></div>
+    <a href="https://www.facebook.com/empparts" class="float-btn fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/empparts/" class="float-btn ig" target="_blank"><i class="fab fa-instagram"></i></a>
+    <button class="float-btn st" id="adminBtn"><i class="fas fa-cog"></i></button>
+</div>
+
+<header>
+    <div class="container header-inner">
+        <a href="#" class="logo-group">
+            <img src="https://www.empparts.com/template/default/images/logo.png" alt="EMP Logo" class="logo-img" onerror="this.src='https://placehold.co/200x80?text=EMP'">
+            <div class="logo-text">
+                <h1>EMP PARTS</h1>
+                <p>Heavy Equipment Specialist</p>
+            </div>
+        </a>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#products">Products</a>
+            <a href="#news">News & Vlog</a>
+            <a href="#about">About</a>
+            <a href="#quickMsg">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="container">
+        <div class="hero-content">
+            <h2>Genuine & Aftermarket<br>Solutions for Excavators</h2>
+            <p>Direct factory supply of Hydraulic Pumps, Isuzu Engine Components, and Final Drives. Serving 30+ countries with OEM quality.</p>
+            <a href="https://wa.me/8615502421365" class="btn-cta">Request Instant Quotation →</a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- 产品分类 -->
+    <h2 class="section-title" id="products">Our Product Range</h2>
+    <p class="section-sub">OEM quality · Competitive prices · Global shipping</p>
+    <div class="grid-6">
+        <div class="card">
+            <img src="https://www.empparts.com/uploads/allimg/210617/1-21061G44640.jpg" alt="Hydraulic Pump">
+            <h3>Hydraulic Parts</h3>
+            <p>Pumps, motors, valves, cylinders</p>
+            <div class="tag-row"><span class="tag">K3V112</span><span class="tag">K5V140</span><span class="tag">FOPFUJI</span></div>
+        </div>
+        <div class="card">
+            <img src="https://www.empparts.com/uploads/allimg/210617/1-21061G45326.jpg" alt="Engine Parts">
+            <h3>Engine Parts</h3>
+            <p>Cylinder liners, pistons, rings, bearings</p>
+            <div class="tag-row"><span class="tag">4HK1</span><span class="tag">6HK1</span><span class="tag">PME</span></div>
+        </div>
+        <div class="card">
+            <img src="https://www.empparts.com/uploads/allimg/210617/1-21061G45025.jpg" alt="Final Drive">
+            <h3>Final Drive & Travel</h3>
+            <p>Travel motors, swing motors, final drives</p>
+            <div class="tag-row"><span class="tag">TM40</span><span class="tag">TM60</span><span class="tag">TM90</span></div>
+        </div>
+        <div class="card">
+            <img src="https://www.empparts.com/uploads/allimg/210617/1-21061G45452.jpg" alt="Undercarriage">
+            <h3>Undercarriage</h3>
+            <p>Track chains, rollers, sprockets, track shoes</p>
+            <div class="tag-row"><span class="tag">PC200</span><span class="tag">EX200</span><span class="tag">DH220</span></div>
+        </div>
+        <div class="card">
+            <img src="https://placehold.co/400x300?text=Electrical+Parts" alt="Electrical Parts">
+            <h3>Electrical & Sensors</h3>
+            <p>Sensors, switches, controllers, wiring harness</p>
+        </div>
+        <div class="card">
+            <img src="https://placehold.co/400x300?text=Engine+Assembly" alt="Engine Assembly">
+            <h3>Full Engine Assembly</h3>
+            <p>Short blocks, long blocks, cylinder heads</p>
+        </div>
+    </div>
+
+    <!-- 热词云 -->
+    <div class="keyword-box">
+        <h3 style="font-size: 1.8rem; font-weight: 800;">Hot Searches & Brands</h3>
+        <div class="keyword-cloud">
+            <span class="kw-item">FOPFUJI</span> <span class="kw-item">PME</span> <span class="kw-item">ISUZU Parts</span>
+            <span class="kw-item">K3V112 Pump</span> <span class="kw-item">TM40 Travel Motor</span> <span class="kw-item">DOOSAN DH220</span>
+            <span class="kw-item">HYUNDAI R210</span> <span class="kw-item">HITACHI EX200</span> <span class="kw-item">VOLVO EC210</span>
+            <span class="kw-item">CAT 320D</span> <span class="kw-item">Liner Kit</span> <span class="kw-item">OEM Quality</span>
+            <span class="kw-item">Factory Direct</span> <span class="kw-item">Undercarriage Parts</span> <span class="kw-item">Crankshaft</span>
+        </div>
+    </div>
+
+    <!-- News & Vlog 动态网格 -->
+    <h2 class="section-title" id="news">News & Vlog</h2>
+    <div id="newsGrid" class="news-grid"></div>
+
+    <!-- Quick Message 留言板 -->
+    <div class="quick-msg" id="quickMsg">
+        <h3>Leave a Quick Message</h3>
+        <form id="quickMessageForm" class="msg-form">
+            <div class="form-group"><input type="text" id="msgName" placeholder="Your Name" required></div>
+            <div class="form-group"><input type="email" id="msgEmail" placeholder="Email Address" required></div>
+            <div class="form-group"><textarea id="msgContent" rows="3" placeholder="Your message... (part numbers, request details)" required></textarea></div>
+            <button type="submit" class="btn-cta" style="border:none; width:100%;">Send Message</button>
+        </form>
+        <div id="msgStatus" class="msg-status"></div>
+    </div>
+
+    <!-- 关于我们 -->
+    <div class="about-wrap" id="about">
+        <div class="about-text">
+            <h3>About EMP PARTS CO., LTD.</h3>
+            <p>Founded in 2012, EMP PARTS is a vertically integrated manufacturer with in-house piston and gearbox factories. We deliver OEM-grade components through certified production lines. Our proprietary brands <strong>PME</strong> (engine parts) and <strong>FOPFUJI</strong> (hydraulic units) exemplify precision manufacturing standards.</p>
+            <p>Our 12,000m² central warehouse in Shenyang holds over $10M inventory, ensuring 48-hour emergency response across China. Serving 30+ countries, we provide complete aftermarket solutions for all major excavator brands including CAT, Komatsu, Hitachi, Doosan, Hyundai, Volvo, and SANY.</p>
+            <p><strong>📞 +86 155 0242 1365</strong> | <strong>✉️ lina@empparts.com</strong></p>
+        </div>
+        <div class="about-img">
+            <img src="https://www.empparts.com/template/default/images/about_img.jpg" onerror="this.src='https://placehold.co/600x400?text=Warehouse'">
+        </div>
+    </div>
+</div>
+
+<!-- 管理后台抽屉 -->
+<div class="admin-drawer" id="adminDrawer">
+    <h4>Admin Panel (Password: 885336)</h4>
+    <div id="adminNewsForm">
+        <h5>Add / Edit News</h5>
+        <div class="form-group"><label>Title</label><input type="text" id="newsTitle" placeholder="News title"></div>
+        <div class="form-group"><label>Date (YYYY-MM-DD)</label><input type="text" id="newsDate" placeholder="2025-04-04"></div>
+        <div class="form-group"><label>Media Type</label>
+            <select id="mediaType">
+                <option value="image">Image URL</option>
+                <option value="youtube">YouTube Video ID</option>
+                <option value="instagram">Instagram Post URL</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Media Value</label><input type="text" id="mediaValue" placeholder="e.g., https://... or dQw4w9WgXcQ"></div>
+        <div class="form-group"><label>Content (HTML allowed)</label><textarea id="newsContent" rows="4" placeholder="Full news content..."></textarea></div>
+        <button class="btn-sm btn-success" id="addNewsBtn">Add News</button>
+        <button class="btn-sm btn-warning" id="cancelEditBtn" style="display:none;">Cancel Edit</button>
+    </div>
+    <hr>
+    <div id="newsListAdmin"></div>
+    <hr>
+    <h5>Visitor Messages</h5>
+    <div id="messagesListAdmin"></div>
+    <hr>
+    <button class="btn-sm btn-danger" id="resetDefaultBtn">Reset Default News</button>
+    <p style="font-size:0.7rem; margin-top:10px;">All data stored in your browser. Export not needed.</p>
+</div>
+
+<!-- 密码模态框 -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <i class="fas fa-lock" style="font-size:40px; color:var(--primary);"></i>
+        <h3>Admin Access</h3>
+        <input type="password" id="adminPassword" placeholder="Enter Password">
+        <button id="submitPwdBtn" class="btn-cta" style="border:none;">Confirm</button>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 EMP PARTS CO., LTD. | All Rights Reserved | WhatsApp: +86 15502421365</p>
+    </div>
+</footer>
+
+<script>
+    // ---------- 数据存储 ----------
+    const NEWS_KEY = "emp_news_v2";
+    const MESSAGES_KEY = "emp_messages_v2";
+
+    // 预置富含关键词的新闻（包含图片、YouTube、Instagram）
+    const DEFAULT_NEWS = [
+        { id: "1", title: "Factory Direct: FOPFUJI K3V112 Hydraulic Pump", date: "2025-03-28", mediaType: "image", mediaValue: "https://www.empparts.com/uploads/allimg/210617/1-21061G44640.jpg", content: "Our FOPFUJI brand K3V112 pump delivers OEM quality at competitive prices. Suitable for excavators like CAT 320D, KOMATSU PC200. Stock ready for global shipping. Contact us for bulk orders." },
+        { id: "2", title: "PME Engine Liner Kits for ISUZU 4HK1", date: "2025-03-20", mediaType: "image", mediaValue: "https://www.empparts.com/uploads/allimg/210617/1-21061G45326.jpg", content: "PME cylinder liners are made from high-strength alloy cast iron. Perfect for 4HK1, 6HK1, 4BG1 engines. Reduce wear and extend engine life. Ask for our wholesale price list." },
+        { id: "3", title: "Vlog: TM40 Travel Motor Replacement Guide", date: "2025-03-15", mediaType: "youtube", mediaValue: "dQw4w9WgXcQ", content: "Watch our technician replace a TM40 travel motor on a Komatsu PC200. Step-by-step instructions, common failure signs, and maintenance tips. OEM quality travel motors in stock." },
+        { id: "4", title: "Instagram Reel: Undercarriage Inspection", date: "2025-04-01", mediaType: "instagram", mediaValue: "https://www.instagram.com/p/Cx9yZt9LqUa/", content: "Check our latest Instagram video showing undercarriage wear measurement and replacement intervals. Track chains, rollers, sprockets for CAT 320D, EX200. Keep your machine running smoothly. Follow us @empparts for more tips." },
+        { id: "5", title: "ISUZU 6HK1 Engine Overhaul Kits Available", date: "2025-03-10", mediaType: "image", mediaValue: "https://placehold.co/800x400?text=6HK1+Engine", content: "Full gasket kits, pistons, rings, liners, bearings for ISUZU 6HK1. Japan technology, competitive prices. Fast shipping to South America, Africa, Middle East." },
+        { id: "6", title: "Doosan DH220 Final Drive Stock Update", date: "2025-03-05", mediaType: "image", mediaValue: "https://placehold.co/800x400?text=Doosan+Final+Drive", content: "We have just received a new shipment of final drives for Doosan DH220. High quality, 12 months warranty. Contact us for best price." },
+        { id: "7", title: "Vlog: How to Identify Genuine vs Aftermarket Parts", date: "2025-02-28", mediaType: "youtube", mediaValue: "9bZkp7q19f0", content: "In this vlog, we share tips on distinguishing OEM quality from counterfeits. Protect your equipment with genuine FOPFUJI and PME parts." }
+    ];
+
+    let newsData = [];
+    let messagesData = [];
+    let isAdmin = false;
+    let editingId = null;
+
+    // 初始化加载
+    function loadNews() {
+        const stored = localStorage.getItem(NEWS_KEY);
+        if (stored) newsData = JSON.parse(stored);
+        else newsData = JSON.parse(JSON.stringify(DEFAULT_NEWS));
+        renderNews();
+        renderNewsAdminList();
+    }
+    function saveNews() { localStorage.setItem(NEWS_KEY, JSON.stringify(newsData)); }
+
+    function loadMessages() {
+        const stored = localStorage.getItem(MESSAGES_KEY);
+        if (stored) messagesData = JSON.parse(stored);
+        else messagesData = [];
+        renderMessagesAdminList();
+    }
+    function saveMessages() { localStorage.setItem(MESSAGES_KEY, JSON.stringify(messagesData)); }
+
+    // 根据媒体类型生成HTML
+    function renderMedia(mediaType, mediaValue) {
+        if (mediaType === 'youtube') {
+            let videoId = mediaValue;
+            if (mediaValue.includes('youtube.com/watch?v=')) {
+                const urlParams = new URLSearchParams(mediaValue.split('?')[1]);
+                videoId = urlParams.get('v');
+            } else if (mediaValue.includes('youtu.be/')) {
+                videoId = mediaValue.split('/').pop();
+            }
+            return `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="width:100%; height:100%;"></iframe>`;
+        } else if (mediaType === 'instagram') {
+            // 尝试提取短代码
+            let embedUrl = mediaValue;
+            if (mediaValue.includes('instagram.com/p/')) {
+                const parts = mediaValue.split('/');
+                const code = parts[parts.indexOf('p') + 1];
+                embedUrl = `https://www.instagram.com/p/${code}/embed`;
+            }
+            return `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width:100%; height:100%;"></iframe>`;
+        } else {
+            return `<img src="${mediaValue || 'https://placehold.co/800x400?text=News'}" alt="News image" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://placehold.co/800x400?text=Image+Not+Found'">`;
+        }
+    }
+
+    function renderNews() {
+        const container = document.getElementById('newsGrid');
+        if (!newsData.length) { container.innerHTML = '<p>No news yet. Check back later.</p>'; return; }
+        container.innerHTML = newsData.map(n => {
+            const mediaHtml = renderMedia(n.mediaType, n.mediaValue);
+            const badge = n.mediaType === 'youtube' ? '🎥 VLOG' : (n.mediaType === 'instagram' ? '📸 INSTAGRAM' : '📰 NEWS');
+            return `
+                <div class="news-card">
+                    <div class="news-media">
+                        <div class="news-badge">${badge}</div>
+                        ${mediaHtml}
+                    </div>
+                    <div class="news-body">
+                        <div class="news-title">${escapeHtml(n.title)}</div>
+                        <div class="news-date"><i class="far fa-calendar-alt"></i> ${escapeHtml(n.date)}</div>
+                        <div class="news-excerpt">${n.content.substring(0, 120)}${n.content.length > 120 ? '...' : ''}</div>
+                        <a href="#" class="btn-sm" style="background:var(--primary); color:white; display:inline-block; margin-top:10px;" onclick="alert('Full content: ${escapeHtml(n.content).replace(/'/g, "\\'")}'); return false;">Read more →</a>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderNewsAdminList() {
+        const container = document.getElementById('newsListAdmin');
+        if (!container) return;
+        if (!newsData.length) { container.innerHTML = '<p>No news items.</p>'; return; }
+        container.innerHTML = '<h5>Existing News</h5>' + newsData.map(n => `
+            <div style="border:1px solid #eef2f8; border-radius:16px; padding:12px; margin-bottom:12px;">
+                <strong>${escapeHtml(n.title)}</strong> (${escapeHtml(n.date)})<br>
+                <small>${n.mediaType}: ${escapeHtml(n.mediaValue)}</small><br>
+                <button class="btn-sm" onclick="editNews('${n.id}')">Edit</button>
+                <button class="btn-sm btn-danger" onclick="deleteNews('${n.id}')">Delete</button>
+            </div>
+        `).join('');
+    }
+
+    function addOrUpdateNews() {
+        if (!isAdmin) return alert("Please login as admin first.");
+        const title = document.getElementById('newsTitle').value.trim();
+        const date = document.getElementById('newsDate').value.trim();
+        const mediaType = document.getElementById('mediaType').value;
+        let mediaValue = document.getElementById('mediaValue').value.trim();
+        const content = document.getElementById('newsContent').value.trim();
+        if (!title || !date || !content) return alert("Title, date and content are required.");
+        if (editingId) {
+            const index = newsData.findIndex(n => n.id === editingId);
+            if (index !== -1) {
+                newsData[index] = { id: editingId, title, date, mediaType, mediaValue, content };
+                saveNews();
+                renderNews();
+                renderNewsAdminList();
+                cancelEdit();
+            }
+        } else {
+            const newId = Date.now().toString();
+            newsData.push({ id: newId, title, date, mediaType, mediaValue, content });
+            saveNews();
+            renderNews();
+            renderNewsAdminList();
+            clearNewsForm();
+        }
+    }
+
+    function editNews(id) {
+        const news = newsData.find(n => n.id === id);
+        if (!news) return;
+        editingId = id;
+        document.getElementById('newsTitle').value = news.title;
+        document.getElementById('newsDate').value = news.date;
+        document.getElementById('mediaType').value = news.mediaType;
+        document.getElementById('mediaValue').value = news.mediaValue;
+        document.getElementById('newsContent').value = news.content;
+        document.getElementById('addNewsBtn').textContent = "Update News";
+        document.getElementById('cancelEditBtn').style.display = 'inline-block';
+    }
+
+    function deleteNews(id) {
+        if (!isAdmin) return alert("Login required.");
+        if (confirm("Delete this news?")) {
+            newsData = newsData.filter(n => n.id !== id);
+            saveNews();
+            renderNews();
+            renderNewsAdminList();
+            if (editingId === id) cancelEdit();
+        }
+    }
+
+    function cancelEdit() {
+        editingId = null;
+        clearNewsForm();
+        document.getElementById('addNewsBtn').textContent = "Add News";
+        document.getElementById('cancelEditBtn').style.display = 'none';
+    }
+
+    function clearNewsForm() {
+        document.getElementById('newsTitle').value = '';
+        document.getElementById('newsDate').value = '';
+        document.getElementById('mediaType').value = 'image';
+        document.getElementById('mediaValue').value = '';
+        document.getElementById('newsContent').value = '';
+    }
+
+    function resetDefaultNews() {
+        if (!isAdmin) return alert("Login required.");
+        if (confirm("Reset all news to default? Current data will be lost.")) {
+            newsData = JSON.parse(JSON.stringify(DEFAULT_NEWS));
+            saveNews();
+            renderNews();
+            renderNewsAdminList();
+            cancelEdit();
+        }
+    }
+
+    // 留言板
+    function addMessage(name, email, content) {
+        const newMsg = { id: Date.now().toString(), name, email, content, date: new Date().toISOString() };
+        messagesData.unshift(newMsg);
+        saveMessages();
+        renderMessagesAdminList();
+        return true;
+    }
+
+    function renderMessagesAdminList() {
+        const container = document.getElementById('messagesListAdmin');
+        if (!container) return;
+        if (!messagesData.length) { container.innerHTML = '<p>No messages yet.</p>'; return; }
+        container.innerHTML = '<h5>Visitor Messages</h5>' + messagesData.map(m => `
+            <div style="border:1px solid #eef2f8; border-radius:16px; padding:12px; margin-bottom:12px;">
+                <strong>${escapeHtml(m.name)}</strong> (${escapeHtml(m.email)})<br>
+                <small>${new Date(m.date).toLocaleString()}</small><br>
+                <p>${escapeHtml(m.content)}</p>
+                <button class="btn-sm btn-danger" onclick="deleteMessage('${m.id}')">Delete</button>
+            </div>
+        `).join('');
+    }
+
+    function deleteMessage(id) {
+        if (!isAdmin) return alert("Login required.");
+        if (confirm("Delete this message?")) {
+            messagesData = messagesData.filter(m => m.id !== id);
+            saveMessages();
+            renderMessagesAdminList();
+        }
+    }
+
+    // 辅助函数
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // 管理员认证
+    function checkPassword() {
+        const pwd = document.getElementById('adminPassword').value;
+        if (pwd === "885336") {
+            isAdmin = true;
+            document.getElementById('passwordModal').style.display = 'none';
+            renderNewsAdminList();
+            renderMessagesAdminList();
+            document.getElementById('adminDrawer').classList.add('show');
+            alert("Admin access granted. You can now manage news and messages.");
+        } else {
+            alert("Wrong password.");
+        }
+    }
+
+    function onAdminToggle() {
+        if (!isAdmin) {
+            document.getElementById('passwordModal').style.display = 'flex';
+        } else {
+            document.getElementById('adminDrawer').classList.toggle('show');
+        }
+    }
+
+    // 微信复制
+    document.getElementById('wechatBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText("empparts").then(() => alert("WeChat ID: empparts (copied to clipboard)"));
+    });
+
+    // 快速留言提交
+    document.getElementById('quickMessageForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('msgName').value.trim();
+        const email = document.getElementById('msgEmail').value.trim();
+        const content = document.getElementById('msgContent').value.trim();
+        if (!name || !email || !content) {
+            document.getElementById('msgStatus').innerHTML = '<span style="color:red;">All fields required.</span>';
+            return;
+        }
+        if (addMessage(name, email, content)) {
+            document.getElementById('msgStatus').innerHTML = '<span style="color:green;">Message sent! We will contact you soon.</span>';
+            document.getElementById('quickMessageForm').reset();
+            setTimeout(() => { document.getElementById('msgStatus').innerHTML = ''; }, 3000);
+        } else {
+            document.getElementById('msgStatus').innerHTML = '<span style="color:red;">Error sending message.</span>';
+        }
+    });
+
+    // 事件绑定
+    window.onload = () => {
+        loadNews();
+        loadMessages();
+        document.getElementById('addNewsBtn').addEventListener('click', addOrUpdateNews);
+        document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+        document.getElementById('resetDefaultBtn').addEventListener('click', resetDefaultNews);
+        document.getElementById('adminBtn').addEventListener('click', onAdminToggle);
+        document.getElementById('submitPwdBtn').addEventListener('click', checkPassword);
+        document.getElementById('adminPassword').addEventListener('keypress', (e) => { if(e.key === 'Enter') checkPassword(); });
+    };
+</script>
+</body>
+</html>
