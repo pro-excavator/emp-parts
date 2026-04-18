@@ -8,6 +8,9 @@
     <meta name="keywords" content="excavator spare parts, hydraulic pump, travel motor, final drive, engine parts, K3V112, TM40, ISUZU 4HK1, CAT 320 parts, Komatsu PC200 parts, FOPFUJI, PME">
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Firebase SDK (optional, only if you want cloud upload) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
     <style>
         :root { --orange: #f97316; --orange-dark: #ea580c; --orange-light: #fff7ed; --steel: #0f172a; --steel2: #1e293b; --steel3: #334155; --mid: #64748b; --light: #f1f5f9; --white: #ffffff; --border: #e2e8f0; --shadow: 0 4px 24px rgba(0,0,0,0.08); --shadow-lg: 0 20px 60px rgba(0,0,0,0.12); --radius: 16px; --radius-lg: 24px; }
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -125,6 +128,7 @@
         .preview-image { width:100%; height:100px; object-fit:cover; border-radius:4px; }
         .progress-bar { width:100%; height:6px; background:#e0e0e0; border-radius:3px; overflow:hidden; margin:10px 0; display:none; }
         .progress-fill { height:100%; background:#3498db; width:0%; transition:width 0.3s; }
+        .warning-banner { background:#fee2e2; border-left:4px solid #ef4444; padding:12px 20px; margin-bottom:20px; border-radius:8px; color:#b91c1c; font-size:.85rem; }
         @media (max-width:1024px){ .footer-grid{grid-template-columns:1fr 1fr} .contact-inner{grid-template-columns:1fr} .about-grid{grid-template-columns:1fr} }
         @media (max-width:768px){ .hero h2{font-size:2.6rem} .hero-stats{grid-template-columns:repeat(2,1fr)} nav{display:none} .a-form-row{grid-template-columns:1fr} .footer-grid{grid-template-columns:1fr} }
     </style>
@@ -232,16 +236,29 @@
 <div id="adminOverlay" class="admin-overlay"><div class="admin-container"><div class="admin-header"><h2>EMP PARTS — Admin Panel</h2><div><button class="btn-s btn-save" onclick="exportBackup()">Export Backup</button><button class="btn-s btn-cancel" onclick="document.getElementById('importFileInput').click()">Import</button><input type="file" id="importFileInput" style="display:none" accept=".json"><button class="admin-close" id="closeAdminBtn">✕</button></div></div>
 <div class="admin-tabs"><button class="tab-btn active" data-tab="dashTab">📊 Dashboard</button><button class="tab-btn" data-tab="productsTab">📦 Products</button><button class="tab-btn" data-tab="newsTab">📰 News</button><button class="tab-btn" data-tab="companyTab">🏢 Company</button><button class="tab-btn" data-tab="messagesTab">💬 Messages</button><button class="tab-btn" data-tab="backupTab">💾 Backup</button></div>
 
-<div id="dashTab" class="tab-content active"><div class="stats-row"><div class="stat-box"><strong id="statProducts">0</strong><span>Products</span></div><div class="stat-box"><strong id="statNews">0</strong><span>News</span></div><div class="stat-box"><strong id="statMessages">0</strong><span>Messages</span></div></div><div class="admin-card"><h3>💡 How to Use Image Upload</h3><ul><li><strong>Recommended: GitHub Method</strong> — Upload images to <code>/images/</code> folder in your GitHub repo, then enter <strong>filename only</strong> (e.g., <code>k3v112.jpg</code>). The system will auto-complete the URL.</li><li><strong>Alternative: Base64 Upload</strong> — Click "Upload Image", select a file, it will be compressed and stored as Base64. <span style="color:#ef4444">Note: localStorage has ~5MB limit.</span></li><li>You can also enter any external image URL directly.</li></ul></div></div>
+<div id="dashTab" class="tab-content active"><div class="stats-row"><div class="stat-box"><strong id="statProducts">0</strong><span>Products</span></div><div class="stat-box"><strong id="statNews">0</strong><span>News</span></div><div class="stat-box"><strong id="statMessages">0</strong><span>Messages</span></div></div>
+<div class="admin-card"><h3>💡 Image Management Guide</h3>
+<div id="envWarning" class="warning-banner" style="display:none;"></div>
+<ul>
+<li><strong>✅ RECOMMENDED: GitHub Images (No limits, never expire)</strong><br>
+1. Upload images to <code>/images/</code> folder in your GitHub repo (<a href="https://github.com/pro-excavator/emp-parts/tree/main/images" target="_blank">click here</a>).<br>
+2. In any image field, just enter the <strong>filename</strong> (e.g., <code>k3v112.jpg</code>).<br>
+3. The system will auto-complete to <code>https://pro-excavator.github.io/emp-parts/images/k3v112.jpg</code>.<br>
+4. No CORS issues, no storage limits, works forever.
+</li>
+<li><strong>📤 Firebase Upload (Backup option)</strong> — Click "Upload Image" button, select files. Requires correct CORS setup and internet.</li>
+<li><strong>💾 Local Base64 (Not recommended)</strong> — Images stored in browser. Limited to ~5MB total. Use only for temporary testing.</li>
+</ul>
+</div></div>
 
-<div id="productsTab" class="tab-content"><div class="admin-card"><h3>➕ Add New Product</h3><div class="a-form-row"><div class="a-form-group"><label>Product Name *</label><input id="newProductName"></div><div class="a-form-group"><label>Short Description</label><input id="newProductDesc"></div></div><div class="a-form-group"><label>Tags (comma separated)</label><input id="newProductTags"></div><div class="a-form-group"><label>Image URL or Filename</label><div style="display:flex; gap:8px;"><input id="newProductImg" style="flex:1" placeholder="k3v112.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('newProductImg')">📤 Upload Image (Base64)</button></div><img id="newProductPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="addProduct()">Add Product</button></div><div id="productsListFull"></div></div>
+<div id="productsTab" class="tab-content"><div class="admin-card"><h3>➕ Add New Product</h3><div class="a-form-row"><div class="a-form-group"><label>Product Name *</label><input id="newProductName"></div><div class="a-form-group"><label>Short Description</label><input id="newProductDesc"></div></div><div class="a-form-group"><label>Tags (comma separated)</label><input id="newProductTags"></div><div class="a-form-group"><label>Image URL or filename</label><div style="display:flex; gap:8px;"><input id="newProductImg" style="flex:1" placeholder="e.g., k3v112.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('newProductImg')">📤 Upload Image (Firebase)</button></div><img id="newProductPreview" class="a-img-preview"><small>💡 Tip: Just enter filename (e.g., <code>k3v112.jpg</code>) if you uploaded to GitHub /images/</small></div><button class="btn-s btn-save" onclick="addProduct()">Add Product</button></div><div id="productsListFull"></div></div>
 
-<div id="newsTab" class="tab-content"><div class="admin-card"><h3>➕ Add / Edit News</h3><div class="a-form-row"><div class="a-form-group"><label>Title</label><input id="newsTitleFull"></div><div class="a-form-group"><label>Date</label><input type="date" id="newsDateFull"></div></div><div class="a-form-row"><div class="a-form-group"><label>Media Type</label><select id="mediaTypeFull"><option value="image">Image</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option></select></div><div class="a-form-group"><label>Image URL / YouTube ID / Instagram URL</label><div style="display:flex; gap:8px;"><input id="mediaValueFull" style="flex:1" placeholder="k3v112.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('mediaValueFull')">📤 Upload Image</button></div><img id="newsImgPreview" class="a-img-preview"></div></div><div class="a-form-group"><label>Content</label><textarea id="newsContentFull" rows="6"></textarea></div><button class="btn-s btn-save" id="addNewsBtn" onclick="saveNews()">Save News</button><button class="btn-s btn-cancel" id="cancelNewsBtn" style="display:none" onclick="cancelNewsEdit()">Cancel</button></div><div id="newsListFull"></div></div>
+<div id="newsTab" class="tab-content"><div class="admin-card"><h3>➕ Add / Edit News</h3><div class="a-form-row"><div class="a-form-group"><label>Title</label><input id="newsTitleFull"></div><div class="a-form-group"><label>Date</label><input type="date" id="newsDateFull"></div></div><div class="a-form-row"><div class="a-form-group"><label>Media Type</label><select id="mediaTypeFull"><option value="image">Image</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option></select></div><div class="a-form-group"><label>Image URL / YouTube ID / Instagram URL</label><div style="display:flex; gap:8px;"><input id="mediaValueFull" style="flex:1" placeholder="e.g., news.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('mediaValueFull')">📤 Upload Image</button></div><img id="newsImgPreview" class="a-img-preview"></div></div><div class="a-form-group"><label>Content</label><textarea id="newsContentFull" rows="6"></textarea></div><button class="btn-s btn-save" id="addNewsBtn" onclick="saveNews()">Save News</button><button class="btn-s btn-cancel" id="cancelNewsBtn" style="display:none" onclick="cancelNewsEdit()">Cancel</button></div><div id="newsListFull"></div></div>
 
-<div id="companyTab" class="tab-content"><div class="admin-card"><h3>Logo</h3><div class="a-form-group"><label>Logo URL</label><div style="display:flex; gap:8px;"><input id="logoUrl" style="flex:1" placeholder="logo.png or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('logoUrl')">📤 Upload Image</button></div><img id="logoPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveLogo()">Save Logo</button></div>
-<div class="admin-card"><h3>Hero Background</h3><div class="a-form-group"><label>Hero Image URL</label><div style="display:flex; gap:8px;"><input id="heroImgUrl" style="flex:1" placeholder="hero.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('heroImgUrl')">📤 Upload Image</button></div><img id="heroImgPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveHeroImg()">Update Hero</button></div>
+<div id="companyTab" class="tab-content"><div class="admin-card"><h3>Logo</h3><div class="a-form-group"><label>Logo URL or filename</label><div style="display:flex; gap:8px;"><input id="logoUrl" style="flex:1" placeholder="logo.png or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('logoUrl')">📤 Upload Image</button></div><img id="logoPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveLogo()">Save Logo</button></div>
+<div class="admin-card"><h3>Hero Background</h3><div class="a-form-group"><label>Hero Image URL or filename</label><div style="display:flex; gap:8px;"><input id="heroImgUrl" style="flex:1" placeholder="hero.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('heroImgUrl')">📤 Upload Image</button></div><img id="heroImgPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveHeroImg()">Update Hero</button></div>
 <div class="admin-card"><h3>About Text (HTML)</h3><textarea id="companyAboutText" rows="8"></textarea><button class="btn-s btn-save" onclick="saveCompanyText()">Save About</button></div>
-<div class="admin-card"><h3>About Image</h3><div class="a-form-group"><label>Image URL</label><div style="display:flex; gap:8px;"><input id="companyImageUrl" style="flex:1" placeholder="warehouse.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('companyImageUrl')">📤 Upload Image</button></div><img id="companyImgPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveCompanyImage()">Save Image</button></div>
+<div class="admin-card"><h3>About Image</h3><div class="a-form-group"><label>Image URL or filename</label><div style="display:flex; gap:8px;"><input id="companyImageUrl" style="flex:1" placeholder="warehouse.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('companyImageUrl')">📤 Upload Image</button></div><img id="companyImgPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveCompanyImage()">Save Image</button></div>
 <div class="admin-card"><h3>Contact Details</h3><div class="a-form-row"><div class="a-form-group"><label>WhatsApp/Phone</label><input id="contactPhone"></div><div class="a-form-group"><label>Email</label><input id="contactEmail"></div></div><div class="a-form-row"><div class="a-form-group"><label>WeChat ID</label><input id="contactWechat"></div><div class="a-form-group"><label>Location</label><input id="contactLocation"></div></div><button class="btn-s btn-save" onclick="saveContact()">Save Contact</button></div></div>
 
 <div id="messagesTab" class="tab-content"><div id="messagesListFull"></div></div>
@@ -249,47 +266,114 @@
 <div id="backupTab" class="tab-content"><div class="admin-card"><h3>Backup & Restore</h3><button class="btn-s btn-save" onclick="exportBackup()">Export Backup</button><button class="btn-s btn-cancel" onclick="document.getElementById('importFileInput').click()">Import Backup</button><button class="btn-s btn-del" onclick="resetAllData()" style="margin-left:10px">Reset All Data</button></div></div>
 </div></div>
 
-<!-- Upload Modal (Base64 compression only) -->
+<!-- Upload Modal (Firebase) -->
 <div id="uploadModal" class="modal-bg"><div class="modal-box" style="width:600px;"><div style="text-align:right;"><button onclick="closeUploadModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button></div>
-<h3>Upload Image (Base64)</h3><p>Select an image. It will be compressed and stored as Base64. <strong>Note: localStorage limit ~5MB. For many images, use GitHub method instead.</strong></p>
-<div id="dropArea" class="upload-area" style="cursor:pointer;"><h4>Drag & Drop or Click to Select</h4><input type="file" id="fileInput" accept="image/*" style="display:none;"><button class="btn-s btn-save" onclick="document.getElementById('fileInput').click()">Select Image</button></div>
+<h3>Upload Image to Cloud Storage</h3><p>Supported formats: JPG, PNG, GIF, WebP (max 5MB, auto-compressed to 800px width)</p>
+<div id="dropArea" class="upload-area" style="cursor:pointer;"><h4>Drag & Drop images here</h4><p>or click to select</p><input type="file" id="fileInput" accept="image/*" multiple style="display:none;"><button class="btn-s btn-save" onclick="document.getElementById('fileInput').click()">Select Images</button></div>
 <div class="progress-bar" id="uploadProgressBar"><div class="progress-fill" id="uploadProgressFill"></div></div>
 <div id="uploadPreviewContainer" class="preview-container"></div>
-<div style="margin-top:15px;"><button class="btn-s btn-save" onclick="startUpload()">Compress & Save</button><button class="btn-s btn-cancel" onclick="closeUploadModal()">Close</button></div>
+<div style="margin-top:15px;"><button class="btn-s btn-save" id="startUploadBtn">Start Upload</button><button class="btn-s btn-cancel" onclick="closeUploadModal()">Close</button></div>
 </div></div>
 
 <div id="passwordModal" class="modal-bg"><div class="modal-box"><div class="modal-icon"><i class="fas fa-lock"></i></div><h3>Admin Login</h3><input type="password" id="adminPassword" placeholder="••••••"><button class="btn-primary" style="width:100%" onclick="checkPassword()">Confirm</button></div></div>
 <div id="toast" class="toast"></div>
 
 <script>
-// ==================== DATA STORAGE ====================
+// Firebase config (optional)
+const firebaseConfig = {
+    apiKey: "AIzaSyCNXMW1uiOwNtusji0W44IsGfb_WaL-3TA",
+    authDomain: "emp-parts-erp.firebaseapp.com",
+    databaseURL: "https://emp-parts-erp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "emp-parts-erp",
+    storageBucket: "emp-parts-erp.firebasestorage.app",
+    messagingSenderId: "1051745386528",
+    appId: "1:1051745386528:web:f15e86f0cb00f94d4b3c45"
+};
+let storage;
+try {
+    const app = firebase.initializeApp(firebaseConfig);
+    storage = firebase.storage();
+    console.log("Firebase initialized");
+} catch(e) { console.warn("Firebase init error", e); }
+
 const ADMIN_PASSWORD = "885336";
-const STORAGE_KEYS = { products:'emp_products_v2', news:'emp_news_v2', messages:'emp_messages_v2', company:'emp_company_v2' };
+const STORAGE_KEYS = { products:'emp_products_final', news:'emp_news_final', messages:'emp_messages_final', company:'emp_company_final' };
 
 let productsData=[], newsData=[], messagesData=[], companyData={};
 let isAdmin=false, editingNewsId=null;
 let currentTargetInputId = null;
-let selectedFile = null;
+let selectedFiles = [];
 
-// Helper functions
+// Helper: Convert filename to full GitHub URL
+const GITHUB_IMAGES_BASE = "https://pro-excavator.github.io/emp-parts/images/";
+function normalizeImageUrl(input) {
+    let url = String(input || "").trim();
+    if (!url) return "";
+    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
+    // If it's a filename (no slash, no protocol), convert to GitHub URL
+    if (!url.includes("/") && !url.includes("\\")) {
+        return GITHUB_IMAGES_BASE + url;
+    }
+    return url;
+}
+
 function esc(s){ return String(s||'').replace(/[&<>]/g,function(m){return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;';}); }
-function showToast(msg, type='success'){ 
-    const t=document.getElementById('toast'); 
-    t.textContent=msg; 
-    t.className='toast show'; 
-    t.style.backgroundColor = type === 'error' ? '#ef4444' : 'var(--steel)';
-    setTimeout(()=>{ t.className='toast'; t.style.backgroundColor=''; }, 3000); 
+function showToast(msg, type='success'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'; setTimeout(()=>t.className='toast',5000); }
+
+// ==================== LOCALSTORAGE CAPACITY CHECK ====================
+function getLocalStorageUsage() {
+    let total = 0;
+    for(let key in localStorage){
+        if(localStorage.hasOwnProperty(key)){
+            total += localStorage[key].length;
+        }
+    }
+    return total;
 }
-function getImgUrl(url){ 
-    if(!url) return ''; 
-    return (url.startsWith('http') || url.startsWith('data:')) ? url : 'images/' + url; 
+function isLocalStorageSpaceAvailable(estimatedAdditionalBytes = 0) {
+    const used = getLocalStorageUsage();
+    const max = 5 * 1024 * 1024; // 5MB
+    return (used + estimatedAdditionalBytes) < max * 0.9; // leave 10% margin
+}
+function safeSaveAll() {
+    const estimatedSize = JSON.stringify({ products:productsData, news:newsData, messages:messagesData, company:companyData }).length;
+    if (!isLocalStorageSpaceAvailable(estimatedSize)) {
+        showToast("❌ Local storage is full! Cannot save. Please delete some data or use GitHub images instead (recommended).", "error");
+        return false;
+    }
+    try {
+        localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(productsData));
+        localStorage.setItem(STORAGE_KEYS.news, JSON.stringify(newsData));
+        localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messagesData));
+        localStorage.setItem(STORAGE_KEYS.company, JSON.stringify(companyData));
+        return true;
+    } catch(e) {
+        if(e.name === 'QuotaExceededError') {
+            showToast("❌ Local storage quota exceeded! Please delete unused data or switch to GitHub images.", "error");
+        } else {
+            showToast("Save failed: " + e.message, "error");
+        }
+        return false;
+    }
 }
 
-// ==================== IMAGE UPLOAD (Base64 compression only, no Firebase) ====================
+// ==================== ENVIRONMENT CHECK ====================
+function checkEnvironment() {
+    const isFileProtocol = window.location.protocol === 'file:';
+    const warningDiv = document.getElementById('envWarning');
+    if (isFileProtocol) {
+        warningDiv.style.display = 'block';
+        warningDiv.innerHTML = '⚠️ You are testing this page locally (file://). Firebase upload will NOT work due to browser CORS restrictions. Please deploy this file to GitHub Pages.<br><br>✅ <strong>Recommendation:</strong> Use GitHub images method (upload to /images/ folder and enter filename).';
+    } else {
+        warningDiv.style.display = 'none';
+    }
+}
+
+// ==================== IMAGE UPLOAD (Firebase with error handling) ====================
 function openUploadModal(targetId){
     currentTargetInputId = targetId;
     document.getElementById('uploadModal').classList.add('show');
-    selectedFile = null;
+    selectedFiles = [];
     document.getElementById('uploadPreviewContainer').innerHTML = '';
     document.getElementById('uploadProgressBar').style.display = 'none';
 }
@@ -304,60 +388,76 @@ const fileInputModal = document.getElementById('fileInput');
 ['dragleave','drop'].forEach(ev => dropArea.addEventListener(ev, ()=>dropArea.classList.remove('dragover')));
 dropArea.addEventListener('drop', (e)=>{
     const files = e.dataTransfer.files;
-    handleFileSelect(files);
+    handleFilesSelect(files);
 });
-fileInputModal.addEventListener('change', (e)=>handleFileSelect(e.target.files));
-function handleFileSelect(files){
-    if(files.length === 0) return;
-    selectedFile = files[0];
-    if(!selectedFile.type.startsWith('image/')){
-        showToast('Please select an image file','error');
-        selectedFile = null;
+fileInputModal.addEventListener('change', (e)=>handleFilesSelect(e.target.files));
+function handleFilesSelect(files){
+    const newFiles = Array.from(files).filter(f=>f.type.startsWith('image/'));
+    selectedFiles.push(...newFiles);
+    renderPreview();
+}
+function renderPreview(){
+    const container = document.getElementById('uploadPreviewContainer');
+    container.innerHTML = selectedFiles.map((f,i)=>`
+        <div class="preview-item">
+            <img src="${URL.createObjectURL(f)}" class="preview-image">
+            <div>${f.name.substring(0,20)}</div>
+            <button class="btn-s btn-cancel" onclick="removeFile(${i})">Remove</button>
+        </div>
+    `).join('');
+}
+function removeFile(idx){ selectedFiles.splice(idx,1); renderPreview(); }
+
+async function startUpload(){
+    if(selectedFiles.length===0){ showToast('No files selected','error'); return; }
+    if(window.location.protocol === 'file:'){
+        showToast('Firebase upload not available in local file mode. Please deploy to GitHub Pages or use GitHub filename method.','error');
         return;
     }
-    const reader = new FileReader();
-    reader.onload = (e)=>{
-        const previewContainer = document.getElementById('uploadPreviewContainer');
-        previewContainer.innerHTML = `<div class="preview-item"><img src="${e.target.result}" class="preview-image"><div>${selectedFile.name.substring(0,20)}</div></div>`;
-    };
-    reader.readAsDataURL(selectedFile);
-}
-async function startUpload(){
-    if(!selectedFile){
-        showToast('No file selected','error');
+    if(!storage){
+        showToast('Firebase not initialized. Check your internet connection.','error');
         return;
     }
     const progressBar = document.getElementById('uploadProgressBar');
     const progressFill = document.getElementById('uploadProgressFill');
     progressBar.style.display = 'block';
-    progressFill.style.width = '50%';
-    try{
-        const compressedBase64 = await compressImage(selectedFile);
-        progressFill.style.width = '100%';
-        if(currentTargetInputId){
-            const targetInput = document.getElementById(currentTargetInputId);
-            if(targetInput){
-                targetInput.value = compressedBase64;
-                
-                // Preview update (Fixed ID mapping bug)
-                let previewId = currentTargetInputId.replace('Url','Preview');
-                if (currentTargetInputId === 'newProductImg') previewId = 'newProductPreview';
-                if (currentTargetInputId === 'mediaValueFull') previewId = 'newsImgPreview';
-                
-                const previewEl = document.getElementById(previewId);
-                if(previewEl && previewEl.tagName === 'IMG'){ 
-                    previewEl.src = compressedBase64; 
-                    previewEl.classList.add('show'); 
-                }
+    let successCount = 0;
+    let lastUrl = '';
+    for(let i=0; i<selectedFiles.length; i++){
+        const file = selectedFiles[i];
+        try{
+            const compressedBase64 = await compressImage(file);
+            const url = await uploadBase64ToFirebase(compressedBase64, file.name);
+            lastUrl = url;
+            successCount++;
+            progressFill.style.width = `${(successCount/selectedFiles.length)*100}%`;
+        }catch(err){
+            console.error('Upload error:', err);
+            let errorMsg = err.message || String(err);
+            if(errorMsg.includes('CORS') || errorMsg.includes('cross-origin')){
+                errorMsg = 'CORS error: Deploy to GitHub Pages or configure Firebase Storage CORS. Use GitHub images method instead.';
+            } else if(errorMsg.includes('permission')) {
+                errorMsg = 'Permission denied: Check Firebase Storage rules (allow read, write: if true).';
+            } else if(errorMsg.includes('network')) {
+                errorMsg = 'Network error: Check your internet connection.';
             }
+            showToast(`Upload failed: ${errorMsg}`, 'error');
         }
-        showToast('Image compressed and saved to field');
-    }catch(err){
-        showToast('Compression failed: '+err.message,'error');
     }
     progressBar.style.display = 'none';
+    if(successCount>0 && currentTargetInputId){
+        const targetInput = document.getElementById(currentTargetInputId);
+        if(targetInput){
+            targetInput.value = lastUrl;
+            // Update preview
+            updatePreviewForInput(currentTargetInputId, lastUrl);
+        }
+    }
+    showToast(`Uploaded ${successCount} image(s)`);
     closeUploadModal();
 }
+document.getElementById('startUploadBtn').addEventListener('click', startUpload);
+
 function compressImage(file){
     return new Promise((resolve, reject)=>{
         const reader = new FileReader();
@@ -389,8 +489,57 @@ function compressImage(file){
         reader.readAsDataURL(file);
     });
 }
+function uploadBase64ToFirebase(base64Data, originalName){
+    return new Promise((resolve, reject)=>{
+        const blob = dataURLToBlob(base64Data);
+        const fileName = `website-images/${Date.now()}_${originalName.replace(/[^a-zA-Z0-9.]/g,'_')}`;
+        const fileRef = storage.ref().child(fileName);
+        const uploadTask = fileRef.put(blob);
+        uploadTask.on('state_changed', null, 
+            (error)=>{ reject(error); },
+            async ()=>{
+                try {
+                    const url = await uploadTask.snapshot.ref.getDownloadURL();
+                    resolve(url);
+                } catch(e){ reject(e); }
+            }
+        );
+    });
+}
+function dataURLToBlob(dataURL){
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--) u8arr[n] = bstr.charCodeAt(n);
+    return new Blob([u8arr], {type:mime});
+}
 
-// ==================== DEFAULT DATA ====================
+// Helper to update preview image based on input ID
+function updatePreviewForInput(inputId, imageUrl) {
+    // Try common preview IDs
+    const previewMap = {
+        'newProductImg': 'newProductPreview',
+        'mediaValueFull': 'newsImgPreview',
+        'logoUrl': 'logoPreview',
+        'heroImgUrl': 'heroImgPreview',
+        'companyImageUrl': 'companyImgPreview'
+    };
+    let previewId = previewMap[inputId];
+    if (!previewId) {
+        // fallback: replace 'Url' with 'Preview'
+        previewId = inputId.replace('Url', 'Preview');
+        if (previewId === inputId) previewId = inputId + 'Preview';
+    }
+    const previewEl = document.getElementById(previewId);
+    if(previewEl && imageUrl){
+        previewEl.src = imageUrl;
+        previewEl.classList.add('show');
+    }
+}
+
+// ==================== DATA LOAD/SAVE with normalization ====================
 const DEFAULT_PRODUCTS = [
     { id:"p1", name:"Hydraulic Pumps & Motors", desc:"K3V112, K5V140, FOPFUJI brand. Fits CAT 320, PC200.", tags:["K3V112","K5V140","FOPFUJI"], img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600" },
     { id:"p2", name:"Engine Parts & Liner Kits", desc:"ISUZU 4HK1, 6HK1, PME brand liners, pistons, rings.", tags:["4HK1","6HK1","PME"], img:"https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600" },
@@ -416,17 +565,37 @@ function loadAll(){
     newsData = JSON.parse(localStorage.getItem(STORAGE_KEYS.news) || JSON.stringify(DEFAULT_NEWS));
     messagesData = JSON.parse(localStorage.getItem(STORAGE_KEYS.messages) || '[]');
     companyData = JSON.parse(localStorage.getItem(STORAGE_KEYS.company) || JSON.stringify(DEFAULT_COMPANY));
+    // Normalize all image URLs to full URLs
+    productsData.forEach(p => { p.img = normalizeImageUrl(p.img); });
+    newsData.forEach(n => { if(n.mediaType === 'image') n.mediaValue = normalizeImageUrl(n.mediaValue); });
+    companyData.logo = normalizeImageUrl(companyData.logo);
+    companyData.heroImg = normalizeImageUrl(companyData.heroImg);
+    companyData.aboutImg = normalizeImageUrl(companyData.aboutImg);
 }
 function saveAll(){
+    // Normalize before saving
+    const productsCopy = productsData.map(p => ({...p, img: normalizeImageUrl(p.img)}));
+    const newsCopy = newsData.map(n => ({...n, mediaValue: n.mediaType === 'image' ? normalizeImageUrl(n.mediaValue) : n.mediaValue}));
+    const companyCopy = {...companyData, 
+        logo: normalizeImageUrl(companyData.logo),
+        heroImg: normalizeImageUrl(companyData.heroImg),
+        aboutImg: normalizeImageUrl(companyData.aboutImg)
+    };
+    const estimatedSize = JSON.stringify({ products:productsCopy, news:newsCopy, messages:messagesData, company:companyCopy }).length;
+    if (!isLocalStorageSpaceAvailable(estimatedSize)) {
+        showToast("❌ Local storage full! Use GitHub images instead.", "error");
+        return false;
+    }
     try {
-        localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(productsData));
-        localStorage.setItem(STORAGE_KEYS.news, JSON.stringify(newsData));
+        localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(productsCopy));
+        localStorage.setItem(STORAGE_KEYS.news, JSON.stringify(newsCopy));
         localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messagesData));
-        localStorage.setItem(STORAGE_KEYS.company, JSON.stringify(companyData));
-    } catch (err) {
-        console.error("Storage error:", err);
-        showToast('Save failed! Storage full. Please use external URLs.', 'error');
-        throw err; // Stop further execution on error
+        localStorage.setItem(STORAGE_KEYS.company, JSON.stringify(companyCopy));
+        return true;
+    } catch(e) {
+        if(e.name === 'QuotaExceededError') showToast("Storage quota exceeded! Delete some data or use GitHub images.", "error");
+        else showToast("Save failed: "+e.message, "error");
+        return false;
     }
 }
 
@@ -439,7 +608,7 @@ function renderProducts(){
     if(!container) return;
     container.innerHTML = productsData.map(p=>`
         <div class="product-card">
-            <img class="product-card-img" src="${esc(getImgUrl(p.img))}" alt="${esc(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+            <img class="product-card-img" src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
             <div class="product-card-body">
                 <h3>${esc(p.name)}</h3>
                 <p>${esc(p.desc)}</p>
@@ -452,10 +621,9 @@ function renderNews(){
     const container = document.getElementById('newsGrid');
     if(!container) return;
     container.innerHTML = newsData.map(n=>{
-        let mediaUrl = getImgUrl(n.mediaValue);
         let media = n.mediaType==='youtube' ? `<iframe src="https://www.youtube.com/embed/${n.mediaValue}" allowfullscreen></iframe>` :
                     n.mediaType==='instagram' ? `<iframe src="${n.mediaValue}/embed" allowfullscreen></iframe>` :
-                    `<img src="${mediaUrl}" alt="${esc(n.title)}" onerror="this.src='https://placehold.co/800x400?text=No+Image'">`;
+                    `<img src="${esc(n.mediaValue)}" alt="${esc(n.title)}" onerror="this.src='https://placehold.co/800x400?text=No+Image'">`;
         return `<div class="news-card"><div class="news-media"><span class="news-badge">${n.mediaType==='youtube'?'VIDEO':'NEWS'}</span>${media}</div><div class="news-body"><div class="news-date">${n.date}</div><div class="news-title">${esc(n.title)}</div><div class="news-excerpt">${esc(n.content).substring(0,120)}…</div></div></div>`;
     }).join('');
 }
@@ -465,10 +633,10 @@ function renderKeywords(){
 }
 function applyCompany(){
     const d=companyData;
-    if(d.logo) document.getElementById('siteLogo').src = getImgUrl(d.logo);
-    if(d.heroImg) document.getElementById('heroBg').style.background = `url('${getImgUrl(d.heroImg)}') center/cover no-repeat`;
+    if(d.logo) document.getElementById('siteLogo').src = d.logo;
+    if(d.heroImg) document.getElementById('heroBg').style.background = `url('${d.heroImg}') center/cover no-repeat`;
     if(d.aboutText) document.getElementById('aboutContent').innerHTML = d.aboutText;
-    if(d.aboutImg) document.getElementById('warehouseImg').src = getImgUrl(d.aboutImg);
+    if(d.aboutImg) document.getElementById('warehouseImg').src = d.aboutImg;
 }
 function buildTrustBar(){
     const items=["Factory Direct","30+ Countries","12,000m² Warehouse","OEM Quality","FOPFUJI Hydraulics","PME Engine Parts","48h Shipping"];
@@ -487,7 +655,7 @@ function renderProductsAdmin(){
     const container = document.getElementById('productsListFull');
     if(!container) return;
     container.innerHTML = productsData.map((p,i)=>`
-        <div class="product-item"><div><strong>${esc(p.name)}</strong><br><img src="${esc(getImgUrl(p.img))}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;margin:6px 0;"></div>
+        <div class="product-item"><div><strong>${esc(p.name)}</strong><br><img src="${esc(p.img)}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;margin:6px 0;"></div>
         <div><button class="btn-s btn-edit" onclick="toggleProductEdit(${i})">Edit</button><button class="btn-s btn-del" onclick="deleteProduct(${i})">Delete</button></div>
         <div id="pe-${i}" class="inline-edit"><input id="pe_name_${i}" value="${esc(p.name)}"><input id="pe_desc_${i}" value="${esc(p.desc)}"><input id="pe_tags_${i}" value="${p.tags.join(',')}"><div style="display:flex; gap:8px;"><input id="pe_img_${i}" value="${esc(p.img)}" style="flex:1"><button class="btn-s btn-upload" onclick="openUploadModal('pe_img_${i}')">Upload</button></div><button class="btn-s btn-save" onclick="saveProductEdit(${i})">Save</button><button class="btn-s btn-cancel" onclick="toggleProductEdit(${i})">Cancel</button></div></div>`).join('');
 }
@@ -506,15 +674,23 @@ window.saveProductEdit = function(i){
     productsData[i].name = document.getElementById(`pe_name_${i}`).value.trim();
     productsData[i].desc = document.getElementById(`pe_desc_${i}`).value.trim();
     productsData[i].tags = document.getElementById(`pe_tags_${i}`).value.split(',').map(s=>s.trim());
-    productsData[i].img = document.getElementById(`pe_img_${i}`).value.trim();
-    saveAll(); renderFront(); renderAdminAll(); showToast('Product updated');
+    let newImg = document.getElementById(`pe_img_${i}`).value.trim();
+    if(newImg) productsData[i].img = newImg;
+    if(saveAll()) { renderFront(); renderAdminAll(); showToast('Product updated'); }
 };
 window.deleteProduct = function(i){ if(confirm('Delete?')){ productsData.splice(i,1); saveAll(); renderFront(); renderAdminAll(); } };
 window.addProduct = function(){
     const name = document.getElementById('newProductName').value.trim();
     if(!name) return showToast('Name required','error');
-    productsData.push({ id:'p'+Date.now(), name, desc:document.getElementById('newProductDesc').value, tags:document.getElementById('newProductTags').value.split(',').map(s=>s.trim()), img:document.getElementById('newProductImg').value.trim() || 'https://placehold.co/600x400?text=New+Product' });
-    saveAll(); renderFront(); renderAdminAll(); showToast('Product added');
+    let img = document.getElementById('newProductImg').value.trim();
+    if(img) img = normalizeImageUrl(img);
+    productsData.push({ id:'p'+Date.now(), name, desc:document.getElementById('newProductDesc').value, tags:document.getElementById('newProductTags').value.split(',').map(s=>s.trim()), img:img || 'https://placehold.co/600x400?text=New+Product' });
+    if(saveAll()) { renderFront(); renderAdminAll(); showToast('Product added'); }
+    document.getElementById('newProductName').value = '';
+    document.getElementById('newProductDesc').value = '';
+    document.getElementById('newProductTags').value = '';
+    document.getElementById('newProductImg').value = '';
+    document.getElementById('newProductPreview').classList.remove('show');
 };
 window.editNews = function(id){
     const n = newsData.find(x=>x.id===id);
@@ -523,7 +699,7 @@ window.editNews = function(id){
     document.getElementById('newsTitleFull').value = n.title;
     document.getElementById('newsDateFull').value = n.date;
     document.getElementById('mediaTypeFull').value = n.mediaType;
-    document.getElementById('mediaValueFull').value = n.mediaValue;
+    document.getElementById('mediaValueFull').value = n.mediaType === 'image' ? n.mediaValue : n.mediaValue;
     document.getElementById('newsContentFull').value = n.content;
     document.getElementById('addNewsBtn').innerHTML = 'Update News';
     document.getElementById('cancelNewsBtn').style.display = 'inline-flex';
@@ -541,14 +717,17 @@ window.cancelNewsEdit = function(){
 window.saveNews = function(){
     const title = document.getElementById('newsTitleFull').value.trim();
     const date = document.getElementById('newsDateFull').value;
+    let mediaValue = document.getElementById('mediaValueFull').value.trim();
+    const mediaType = document.getElementById('mediaTypeFull').value;
     const content = document.getElementById('newsContentFull').value.trim();
     if(!title||!date||!content) return showToast('Fill all fields','error');
-    const obj = { id:editingNewsId || ('n'+Date.now()), title, date, mediaType:document.getElementById('mediaTypeFull').value, mediaValue:document.getElementById('mediaValueFull').value.trim(), content };
+    if(mediaType === 'image' && mediaValue) mediaValue = normalizeImageUrl(mediaValue);
+    const obj = { id:editingNewsId || ('n'+Date.now()), title, date, mediaType, mediaValue, content };
     if(editingNewsId){
         const idx = newsData.findIndex(x=>x.id===editingNewsId);
         if(idx>=0) newsData[idx] = obj;
     } else newsData.unshift(obj);
-    saveAll(); renderFront(); renderAdminAll(); cancelNewsEdit(); showToast('News saved');
+    if(saveAll()) { renderFront(); renderAdminAll(); cancelNewsEdit(); showToast('News saved'); }
 };
 window.deleteNews = function(id){
     if(confirm('Delete?')){ newsData = newsData.filter(x=>x.id!==id); saveAll(); renderFront(); renderAdminAll(); }
@@ -557,10 +736,25 @@ window.deleteMessage = function(id){
     messagesData = messagesData.filter(m=>m.id!==id);
     saveAll(); renderMessagesAdmin();
 };
-window.saveLogo = function(){ companyData.logo = document.getElementById('logoUrl').value; saveAll(); applyCompany(); showToast('Logo updated'); };
-window.saveHeroImg = function(){ companyData.heroImg = document.getElementById('heroImgUrl').value; saveAll(); applyCompany(); showToast('Hero updated'); };
-window.saveCompanyText = function(){ companyData.aboutText = document.getElementById('companyAboutText').value; saveAll(); applyCompany(); showToast('About text saved'); };
-window.saveCompanyImage = function(){ companyData.aboutImg = document.getElementById('companyImageUrl').value; saveAll(); applyCompany(); showToast('About image saved'); };
+window.saveLogo = function(){ 
+    let newLogo = document.getElementById('logoUrl').value.trim();
+    if(newLogo) companyData.logo = normalizeImageUrl(newLogo);
+    if(saveAll()) { applyCompany(); showToast('Logo updated'); }
+};
+window.saveHeroImg = function(){
+    let newHero = document.getElementById('heroImgUrl').value.trim();
+    if(newHero) companyData.heroImg = normalizeImageUrl(newHero);
+    if(saveAll()) { applyCompany(); showToast('Hero updated'); }
+};
+window.saveCompanyText = function(){ 
+    companyData.aboutText = document.getElementById('companyAboutText').value; 
+    if(saveAll()) { applyCompany(); showToast('About text saved'); }
+};
+window.saveCompanyImage = function(){
+    let newImg = document.getElementById('companyImageUrl').value.trim();
+    if(newImg) companyData.aboutImg = normalizeImageUrl(newImg);
+    if(saveAll()) { applyCompany(); showToast('About image saved'); }
+};
 window.saveContact = function(){
     companyData.phone = document.getElementById('contactPhone').value;
     companyData.email = document.getElementById('contactEmail').value;
@@ -586,7 +780,7 @@ window.importBackup = function(e){
             if(d.news) newsData = d.news;
             if(d.messages) messagesData = d.messages;
             if(d.company) companyData = d.company;
-            saveAll(); renderFront(); renderAdminAll(); showToast('Import success');
+            if(saveAll()) { renderFront(); renderAdminAll(); showToast('Import success'); }
         }catch(err){ showToast('Invalid file','error'); }
     };
     reader.readAsText(file);
@@ -651,7 +845,7 @@ document.getElementById('quickMessageForm').addEventListener('submit',function(e
     document.getElementById('msgStatus').innerHTML = '<span style="color:#22c55e">Message sent! We\'ll reply soon.</span>';
     this.reset(); setTimeout(()=>document.getElementById('msgStatus').innerHTML='',4000);
 });
-loadAll(); renderFront(); buildTrustBar(); initTabs();
+loadAll(); saveAll(); renderFront(); buildTrustBar(); initTabs(); checkEnvironment();
 </script>
 </body>
 </html>
