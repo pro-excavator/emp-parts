@@ -83,7 +83,7 @@
         .contact-form-card { background:white; border-radius:var(--radius-lg); padding:36px; border:1px solid var(--border); box-shadow:var(--shadow); }
         .about-grid { display:grid; grid-template-columns:1.1fr 1fr; gap:60px; align-items:center; }
         .about-img-wrap { position:relative; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-lg); }
-        .about-img-wrap img { width:100%; display:block; height:420px; object-fit:cover; }
+        .about-img-wrap img { width:100%; display:block; height:420px; object-fit:cover; object-position:center center; }
         footer { background:var(--steel); color:rgba(255,255,255,.55); padding:50px 0 28px; }
         .footer-brand { }
         .footer-logo-text { font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:800; color:white; margin-bottom:12px; }
@@ -251,7 +251,7 @@
 
 <section class="section" id="about"><div class="container"><div class="about-grid">
   <div><span class="section-tag">About Us</span><h3 id="aboutHeading">About EMP PARTS CO., LTD.</h3><div id="aboutContent"><p>Founded in 2012, EMP PARTS is a vertically integrated manufacturer and exporter of heavy equipment spare parts based in Shenyang, China. We operate in-house piston and gearbox factories, delivering OEM-grade components.</p><p>Our proprietary brands — <strong>PME</strong> (engine parts) and <strong>FOPFUJI</strong> (hydraulic units) — set the benchmark for aftermarket quality.</p></div></div>
-  <div class="about-img-wrap"><img id="warehouseImg" src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80" alt="Warehouse"><div><i class="fas fa-shield-alt"></i><p><strong>ISO Certified Quality</strong><br>All products tested to OEM specifications</p></div></div>
+  <div class="about-img-wrap"><img id="warehouseImg" src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80" alt="EMP PARTS Factory"></div>
 </div></div></section>
 
 <footer><div class="container"><div class="footer-grid"><div class="footer-brand"><div class="footer-logo-text"><span>EMP</span> PARTS</div><p>China's trusted manufacturer and exporter of excavator spare parts.</p></div><div class="footer-col"><h5>Products</h5><a href="#products">Hydraulic Pumps</a><a href="#products">Travel Motors</a><a href="#products">Engine Parts</a></div><div class="footer-col"><h5>Brands</h5><a href="#products">FOPFUJI Hydraulic</a><a href="#products">PME Engine Parts</a></div><div class="footer-col"><h5>Contact</h5><p>+86 155 0242 1365</p><p>lina@empparts.com</p><p>WeChat: empparts</p></div></div><div class="footer-bottom"><p>© 2026 EMP PARTS CO., LTD. All Rights Reserved.</p></div></div></footer>
@@ -288,9 +288,25 @@
 <div id="newsTab" class="tab-content"><div class="admin-card"><h3>➕ Add / Edit News</h3><div class="a-form-row"><div class="a-form-group"><label>Title</label><input id="newsTitleFull"></div><div class="a-form-group"><label>Date</label><input type="date" id="newsDateFull"></div></div><div class="a-form-row"><div class="a-form-group"><label>Media Type</label><select id="mediaTypeFull"><option value="image">Image</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option></select></div><div class="a-form-group"><label>Image URL / YouTube ID / Instagram URL</label><div style="display:flex; gap:8px;"><input id="mediaValueFull" style="flex:1" placeholder="e.g., news.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('mediaValueFull')">📤 Upload Image</button></div><img id="newsImgPreview" class="a-img-preview"></div></div><div class="a-form-group"><label>Content</label><textarea id="newsContentFull" rows="6"></textarea></div><button class="btn-s btn-save" id="addNewsBtn" onclick="saveNews()">Save News</button><button class="btn-s btn-cancel" id="cancelNewsBtn" style="display:none" onclick="cancelNewsEdit()">Cancel</button></div><div id="newsListFull"></div></div>
 
 <div id="companyTab" class="tab-content"><div class="admin-card"><h3>Logo</h3><div class="a-form-group"><label>Logo URL or filename</label><div style="display:flex; gap:8px;"><input id="logoUrl" style="flex:1" placeholder="logo.png or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('logoUrl')">📤 Upload Image</button></div><img id="logoPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveLogo()">Save Logo</button></div>
-<div class="admin-card"><h3>Hero Background</h3><div class="a-form-group"><label>Hero Image URL or filename</label><div style="display:flex; gap:8px;"><input id="heroImgUrl" style="flex:1" placeholder="hero.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('heroImgUrl')">📤 Upload Image</button></div><img id="heroImgPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveHeroImg()">Update Hero</button></div>
+<div class="admin-card">
+  <h3>🌄 Hero Background Image</h3>
+  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">This is the <strong>full-width background photo</strong> at the very top of the website — the large dark image behind "Excavator Spare Parts You Can Rely On". Recommended: wide landscape photo, at least 1600×580px.</p>
+  <div class="a-form-group"><label>Image URL or filename</label>
+    <div style="display:flex;gap:8px"><input id="heroImgUrl" style="flex:1" placeholder="hero.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('heroImgUrl')">📤 Upload Image</button></div>
+    <img id="heroImgPreview" class="a-img-preview">
+  </div>
+  <button class="btn-s btn-save" onclick="saveHeroImg()">Update Hero Image</button>
+</div>
 <div class="admin-card"><h3>About Text (HTML)</h3><textarea id="companyAboutText" rows="8"></textarea><button class="btn-s btn-save" onclick="saveCompanyText()">Save About</button></div>
-<div class="admin-card"><h3>About Image</h3><div class="a-form-group"><label>Image URL or filename</label><div style="display:flex; gap:8px;"><input id="companyImageUrl" style="flex:1" placeholder="warehouse.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('companyImageUrl')">📤 Upload Image</button></div><img id="companyImgPreview" class="a-img-preview"></div><button class="btn-s btn-save" onclick="saveCompanyImage()">Save Image</button></div>
+<div class="admin-card">
+  <h3>🏭 About Us Image</h3>
+  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">This is the photo on the <strong>right side of the About Us section</strong>. Shows your factory/warehouse. Recommended: 900×420px landscape. Use the processed factory image for best results.</p>
+  <div class="a-form-group"><label>Image URL or filename</label>
+    <div style="display:flex;gap:8px"><input id="companyImageUrl" style="flex:1" placeholder="warehouse.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('companyImageUrl')">📤 Upload Image</button></div>
+    <img id="companyImgPreview" class="a-img-preview">
+  </div>
+  <button class="btn-s btn-save" onclick="saveCompanyImage()">Save Image</button>
+</div>
 <div class="admin-card"><h3>Contact Details</h3><div class="a-form-row"><div class="a-form-group"><label>WhatsApp/Phone</label><input id="contactPhone"></div><div class="a-form-group"><label>Email</label><input id="contactEmail"></div></div><div class="a-form-row"><div class="a-form-group"><label>WeChat ID</label><input id="contactWechat"></div><div class="a-form-group"><label>Location</label><input id="contactLocation"></div></div><button class="btn-s btn-save" onclick="saveContact()">Save Contact</button></div></div>
 
 <div id="messagesTab" class="tab-content"><div id="messagesListFull"></div></div>
