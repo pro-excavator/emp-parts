@@ -8,7 +8,7 @@
     <meta name="keywords" content="excavator spare parts, hydraulic pump, travel motor, final drive, engine parts, K3V112, TM40, ISUZU 4HK1, CAT 320 parts, Komatsu PC200 parts, FOPFUJI, PME">
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- GitHub image upload — no Firebase needed -->
+    <!-- GitHub-based storage — no Firebase needed -->
     <style>
         :root { --orange: #f97316; --orange-dark: #ea580c; --orange-light: #fff7ed; --steel: #0f172a; --steel2: #1e293b; --steel3: #334155; --mid: #64748b; --light: #f1f5f9; --white: #ffffff; --border: #e2e8f0; --shadow: 0 4px 24px rgba(0,0,0,0.08); --shadow-lg: 0 20px 60px rgba(0,0,0,0.12); --radius: 16px; --radius-lg: 24px; }
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -129,9 +129,15 @@
         .warning-banner { background:#fee2e2; border-left:4px solid #ef4444; padding:12px 20px; margin-bottom:20px; border-radius:8px; color:#b91c1c; font-size:.85rem; }
         @media (max-width:1024px){ .footer-grid{grid-template-columns:1fr 1fr} .contact-inner{grid-template-columns:1fr} .about-grid{grid-template-columns:1fr} }
         @media (max-width:768px){ .hero h2{font-size:2.6rem} .hero-stats{grid-template-columns:repeat(2,1fr)} nav{display:none} .a-form-row{grid-template-columns:1fr} .footer-grid{grid-template-columns:1fr} }
+    .page-loading-bar { position:fixed; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,#f97316,#fb923c); z-index:99999; display:none; animation:loading-slide 1.2s ease-in-out infinite; }
+    @keyframes loading-slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+    .global-save-indicator { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#0f172a; color:white; padding:10px 22px; border-radius:10px; font-size:.85rem; font-weight:700; z-index:50000; display:none; box-shadow:0 4px 20px rgba(0,0,0,.3); }
     </style>
 </head>
 <body>
+
+<div id="pageLoadingBar" class="page-loading-bar"></div>
+<div id="globalSaveIndicator" class="global-save-indicator">💾 Saving...</div>
 
 <div class="float-bar">
   <a href="https://wa.me/8615502421365" class="float-btn fb-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
@@ -231,28 +237,23 @@
 <footer><div class="container"><div class="footer-grid"><div class="footer-brand"><div class="footer-logo-text"><span>EMP</span> PARTS</div><p>China's trusted manufacturer and exporter of excavator spare parts.</p></div><div class="footer-col"><h5>Products</h5><a href="#products">Hydraulic Pumps</a><a href="#products">Travel Motors</a><a href="#products">Engine Parts</a></div><div class="footer-col"><h5>Brands</h5><a href="#products">FOPFUJI Hydraulic</a><a href="#products">PME Engine Parts</a></div><div class="footer-col"><h5>Contact</h5><p>+86 155 0242 1365</p><p>lina@empparts.com</p><p>WeChat: empparts</p></div></div><div class="footer-bottom"><p>© 2026 EMP PARTS CO., LTD. All Rights Reserved.</p></div></div></footer>
 
 <!-- Admin Overlay -->
-<div id="adminOverlay" class="admin-overlay"><div class="admin-container"><div class="admin-header"><h2>EMP PARTS — Admin Panel</h2><div><button class="btn-s btn-save" onclick="exportBackup()">Export Backup</button><button class="btn-s btn-cancel" onclick="document.getElementById('importFileInput').click()">Import</button><input type="file" id="importFileInput" style="display:none" accept=".json"><button class="btn-s" style="background:#64748b;color:white" onclick="logoutAdmin()">🔒 Logout</button><button class="admin-close" id="closeAdminBtn">✕</button></div></div>
+<div id="adminOverlay" class="admin-overlay"><div class="admin-container"><div class="admin-header"><h2>EMP PARTS — Admin Panel</h2><div style="display:flex;gap:8px;align-items:center"><button class="btn-s btn-save" onclick="exportBackup()">Export</button><button class="btn-s btn-cancel" onclick="document.getElementById('importFileInput').click()">Import</button><input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importBackup(event)"><button class="btn-s" style="background:#64748b;color:white" onclick="logoutAdmin()">🔒 Logout</button><button class="admin-close" id="closeAdminBtn">✕</button></div></div>
 <div class="admin-tabs"><button class="tab-btn active" data-tab="dashTab">📊 Dashboard</button><button class="tab-btn" data-tab="productsTab">📦 Products</button><button class="tab-btn" data-tab="newsTab">📰 News</button><button class="tab-btn" data-tab="companyTab">🏢 Company</button><button class="tab-btn" data-tab="messagesTab">💬 Messages</button><button class="tab-btn" data-tab="backupTab">💾 Backup</button></div>
 
-<div id="dashTab" class="tab-content active"><div class="stats-row"><div class="stat-box"><strong id="statProducts">0</strong><span>Products</span></div><div class="stat-box"><strong id="statNews">0</strong><span>News</span></div><div class="stat-box"><strong id="statMessages">0</strong><span>Messages</span></div><div class="stat-box"><strong id="statStorage" style="color:#22c55e">0 KB</strong><span>Storage Used</span></div></div>
-<div class="admin-card" style="border-left:4px solid #22c55e">
-  <h3>✅ Image Upload — Ready to Use</h3>
-  <p style="font-size:.88rem;color:#374151;line-height:1.8;margin-bottom:10px">
-    Images are uploaded directly to your GitHub repo and served permanently via GitHub Pages. <strong>No Firebase, no third-party accounts needed.</strong>
-  </p>
-  <ol style="font-size:.85rem;color:#374151;line-height:2.2;padding-left:20px">
-    <li>Go to <strong>Products / News / Company</strong> tab</li>
-    <li>Click the orange <strong>📤 Upload Image</strong> button</li>
-    <li>Select or drag your photo → click <strong>Start Upload</strong></li>
-    <li>Wait for <strong>"✅ Done! Now click Save"</strong></li>
-    <li>Click <strong>Save</strong> — image URL stored, refresh anytime ✅</li>
-  </ol>
-  <p style="font-size:.8rem;color:#6b7280;margin-top:8px">
-    Images are auto-compressed to max 1200px wide, saved to <code>/images/</code> in your GitHub repo, and served from <code>https://pro-excavator.github.io/emp-parts/images/</code>
-  </p>
-</div>
-<div id="envWarning" class="warning-banner" style="display:none"></div>
-</div>
+<div id="dashTab" class="tab-content active"><div class="stats-row"><div class="stat-box"><strong id="statProducts">0</strong><span>Products</span></div><div class="stat-box"><strong id="statNews">0</strong><span>News</span></div><div class="stat-box"><strong id="statMessages">0</strong><span>Messages</span></div></div>
+<div class="admin-card"><h3>💡 Image Management Guide</h3>
+<div id="envWarning" class="warning-banner" style="display:none;"></div>
+<ul>
+<li><strong>✅ RECOMMENDED: GitHub Images (No limits, never expire)</strong><br>
+1. Upload images to <code>/images/</code> folder in your GitHub repo (<a href="https://github.com/pro-excavator/emp-parts/tree/main/images" target="_blank">click here</a>).<br>
+2. In any image field, just enter the <strong>filename</strong> (e.g., <code>k3v112.jpg</code>).<br>
+3. The system will auto-complete to <code>https://pro-excavator.github.io/emp-parts/images/k3v112.jpg</code>.<br>
+4. No CORS issues, no storage limits, works forever.
+</li>
+<li><strong>📤 Firebase Upload (Backup option)</strong> — Click "Upload Image" button, select files. Requires correct CORS setup and internet.</li>
+<li><strong>💾 Local Base64 (Not recommended)</strong> — Images stored in browser. Limited to ~5MB total. Use only for temporary testing.</li>
+</ul>
+</div></div>
 
 <div id="productsTab" class="tab-content"><div class="admin-card"><h3>➕ Add New Product</h3><div class="a-form-row"><div class="a-form-group"><label>Product Name *</label><input id="newProductName"></div><div class="a-form-group"><label>Short Description</label><input id="newProductDesc"></div></div><div class="a-form-group"><label>Tags (comma separated)</label><input id="newProductTags"></div><div class="a-form-group"><label>Image URL or filename</label><div style="display:flex; gap:8px;"><input id="newProductImg" style="flex:1" placeholder="e.g., k3v112.jpg or https://..."><button class="btn-s btn-upload" onclick="openUploadModal('newProductImg')">📤 Upload Image (Firebase)</button></div><img id="newProductPreview" class="a-img-preview"><small>💡 Tip: Just enter filename (e.g., <code>k3v112.jpg</code>) if you uploaded to GitHub /images/</small></div><button class="btn-s btn-save" onclick="addProduct()">Add Product</button></div><div id="productsListFull"></div></div>
 
@@ -276,22 +277,12 @@
       <h3 style="font-size:1.1rem;font-weight:800;color:#0f172a">📤 Upload Image to GitHub</h3>
       <button onclick="closeUploadModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#64748b">&times;</button>
     </div>
-    <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">Images are saved to your GitHub repo <code>pro-excavator/emp-parts/images/</code> and served via GitHub Pages. Supports JPG, PNG, WebP — auto-compressed to max 1200px.</p>
-    <div id="dropArea" class="upload-area">
-      <h4 style="margin-bottom:6px">Drag &amp; Drop images here</h4>
-      <p style="font-size:.82rem;color:#64748b;margin-bottom:10px">or click to select files</p>
-      <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
-      <button class="btn-s btn-save" onclick="document.getElementById('fileInput').click()">Select Images</button>
-    </div>
-    <div class="progress-bar" id="uploadProgressBar" style="display:none">
-      <div class="progress-fill" id="uploadProgressFill"></div>
-    </div>
+    <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">Images saved to <code>pro-excavator/emp-parts/images/</code> and served via GitHub Pages. JPG, PNG, WebP — auto-compressed to 1200px.</p>
+    <div id="dropArea" class="upload-area"><h4 style="margin-bottom:6px">Drag &amp; Drop images here</h4><p style="font-size:.82rem;color:#64748b;margin-bottom:10px">or click to select</p><input type="file" id="fileInput" accept="image/*" multiple style="display:none"><button class="btn-s btn-save" onclick="document.getElementById('fileInput').click()">Select Images</button></div>
+    <div class="progress-bar" id="uploadProgressBar" style="display:none"><div class="progress-fill" id="uploadProgressFill"></div></div>
     <div id="uploadStatusMsg" style="font-size:.82rem;color:#374151;min-height:20px;margin:8px 0;font-weight:600"></div>
     <div id="uploadPreviewContainer" class="preview-container"></div>
-    <div style="margin-top:16px;display:flex;gap:10px">
-      <button class="btn-s btn-save" id="startUploadBtn">⬆ Start Upload</button>
-      <button class="btn-s btn-cancel" onclick="closeUploadModal()">Close</button>
-    </div>
+    <div style="margin-top:16px;display:flex;gap:10px"><button class="btn-s btn-save" id="startUploadBtn">⬆ Start Upload</button><button class="btn-s btn-cancel" onclick="closeUploadModal()">Close</button></div>
   </div>
 </div>
 
@@ -299,11 +290,8 @@
 <div id="toast" class="toast"></div>
 
 <script>
-// ==================== CONFIG ====================
+// ===================== CONFIG =====================
 const ADMIN_PASSWORD = "885336";
-const STORAGE_KEYS = { products:'emp_products_final', news:'emp_news_final', messages:'emp_messages_final', company:'emp_company_final' };
-
-// GitHub upload config — images go to your own repo /images/ folder
 const GITHUB_CONFIG = {
     token:  "github_pat_11CBC2AHQ0AmdhyO1LTMPJ_" + "HoqPtHMVR2qNC32qQoRQUUIouwElwL0AtO5MbbFyAOqF3GQNQGMfr26hahn",
     owner:  "pro-excavator",
@@ -312,234 +300,27 @@ const GITHUB_CONFIG = {
     folder: "images"
 };
 const GITHUB_IMAGES_BASE = `https://${GITHUB_CONFIG.owner}.github.io/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.folder}/`;
+const DATA_FILE    = "data.json";
+const DATA_API_URL = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${DATA_FILE}`;
+const DATA_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${DATA_FILE}`;
 
 let productsData=[], newsData=[], messagesData=[], companyData={};
-let isAdmin=false, editingNewsId=null;
-let currentTargetInputId = null;
-let selectedFiles = [];
+let isAdmin=false, editingNewsId=null, currentTargetInputId=null, selectedFiles=[];
+let _dataSha=null;
 
-// Helper: Convert filename to full GitHub Pages URL
+// ===================== HELPERS =====================
 function normalizeImageUrl(input) {
-    let url = String(input || "").trim();
-    if (!url) return "";
-    // Never save raw base64 — it will overflow localStorage
-    if (url.startsWith("data:")) return "";
-    if (url.startsWith("http://") || url.startsWith("https://")) return url;
-    // Plain filename → auto-complete to GitHub Pages URL
-    if (!url.includes("/") && !url.includes("\\")) {
-        return GITHUB_IMAGES_BASE + url;
-    }
+    let url = String(input||"").trim();
+    if(!url) return "";
+    if(url.startsWith("data:")) return "";
+    if(url.startsWith("http://")||url.startsWith("https://")) return url;
+    if(!url.includes("/")&&!url.includes("\\")) return GITHUB_IMAGES_BASE+url;
     return url;
 }
+function esc(s){ return String(s||'').replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
+function showToast(msg,type='success'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'; if(type==='error') t.style.background='#ef4444'; else t.style.background=''; setTimeout(()=>{ t.className='toast'; t.style.background=''; },5000); }
 
-function esc(s){ return String(s||'').replace(/[&<>]/g,function(m){return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;';}); }
-function showToast(msg, type='success'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'; setTimeout(()=>t.className='toast',5000); }
-
-// ==================== LOCALSTORAGE USAGE (display only) ====================
-function getLocalStorageUsedKB() {
-    let total = 0;
-    for (let k in localStorage) {
-        if (localStorage.hasOwnProperty(k)) total += (localStorage[k].length + k.length) * 2;
-    }
-    return Math.round(total / 1024);
-}
-
-// ==================== ENVIRONMENT CHECK ====================
-function checkEnvironment() {
-    const warningDiv = document.getElementById('envWarning');
-    if(warningDiv) warningDiv.style.display = 'none';
-}
-
-// ==================== IMAGE COMPRESS ====================
-function compressImage(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = reject;
-        reader.onload = e => {
-            const img = new Image();
-            img.onerror = reject;
-            img.onload = () => {
-                let w = img.width, h = img.height;
-                const MAX = 1200;
-                if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-                const canvas = document.createElement('canvas');
-                canvas.width = w; canvas.height = h;
-                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                canvas.toBlob(blob => {
-                    const fr = new FileReader();
-                    fr.onload = ev => resolve(ev.target.result); // base64
-                    fr.onerror = reject;
-                    fr.readAsDataURL(blob);
-                }, 'image/jpeg', 0.82);
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-// ==================== GITHUB IMAGE UPLOAD ====================
-/**
- * Upload a base64 image to GitHub repo via API.
- * Returns the GitHub Pages public URL (https://owner.github.io/repo/images/filename).
- */
-async function uploadToGitHub(base64DataUrl, originalName) {
-    const cfg = GITHUB_CONFIG;
-    // Strip the data:image/...;base64, prefix — GitHub API needs raw base64
-    const base64Content = base64DataUrl.split(',')[1];
-    // Build a clean filename: timestamp + sanitized original name
-    const ext = originalName.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
-    const safeName = originalName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 40);
-    const filename = `${Date.now()}_${safeName}.${ext}`;
-    const apiUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.folder}/${filename}`;
-
-    const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-            'Authorization': `token ${cfg.token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/vnd.github.v3+json'
-        },
-        body: JSON.stringify({
-            message: `Upload image: ${filename}`,
-            content: base64Content,
-            branch: cfg.branch
-        })
-    });
-
-    if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        const msg = err.message || response.statusText;
-        if (response.status === 401) throw new Error('GitHub Token invalid or expired. Please update the token in the code.');
-        if (response.status === 403) throw new Error('GitHub Token does not have repo write permission.');
-        if (response.status === 422) throw new Error('File already exists with this name. Will retry with new name.');
-        throw new Error(`GitHub API error ${response.status}: ${msg}`);
-    }
-
-    // Return the public GitHub Pages URL
-    const publicUrl = `${GITHUB_IMAGES_BASE}${filename}`;
-    return publicUrl;
-}
-
-// ==================== UPLOAD MODAL ====================
-function openUploadModal(targetId) {
-    currentTargetInputId = targetId;
-    selectedFiles = [];
-    document.getElementById('uploadPreviewContainer').innerHTML = '';
-    document.getElementById('uploadProgressBar').style.display = 'none';
-    document.getElementById('uploadProgressFill').style.width = '0%';
-    document.getElementById('uploadStatusMsg').textContent = '';
-    document.getElementById('startUploadBtn').disabled = false;
-    document.getElementById('startUploadBtn').textContent = 'Start Upload';
-    document.getElementById('uploadModal').classList.add('show');
-}
-function closeUploadModal() {
-    document.getElementById('uploadModal').classList.remove('show');
-    currentTargetInputId = null;
-    selectedFiles = [];
-}
-const dropArea = document.getElementById('dropArea');
-const fileInputModal = document.getElementById('fileInput');
-['dragenter','dragover','dragleave','drop'].forEach(ev => dropArea.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
-['dragenter','dragover'].forEach(ev => dropArea.addEventListener(ev, () => dropArea.classList.add('dragover')));
-['dragleave','drop'].forEach(ev => dropArea.addEventListener(ev, () => dropArea.classList.remove('dragover')));
-dropArea.addEventListener('drop', e => handleFilesSelect(e.dataTransfer.files));
-fileInputModal.addEventListener('change', e => handleFilesSelect(e.target.files));
-
-function handleFilesSelect(files) {
-    const imgs = Array.from(files).filter(f => f.type.startsWith('image/'));
-    if (!imgs.length) { showToast('Please select image files (JPG, PNG, WebP)', 'error'); return; }
-    selectedFiles.push(...imgs);
-    renderPreview();
-}
-function renderPreview() {
-    const container = document.getElementById('uploadPreviewContainer');
-    container.innerHTML = selectedFiles.map((f, i) => `
-        <div class="preview-item">
-            <img src="${URL.createObjectURL(f)}" class="preview-image" alt="${f.name}">
-            <div style="font-size:.75rem;margin-top:4px">${f.name.substring(0, 22)}</div>
-            <div style="font-size:.7rem;color:#64748b">${(f.size/1024).toFixed(0)}KB</div>
-            <button class="btn-s btn-cancel" style="margin-top:4px" onclick="removeFile(${i})">✕ Remove</button>
-        </div>`).join('');
-}
-function removeFile(idx) { selectedFiles.splice(idx, 1); renderPreview(); }
-
-async function startUpload() {
-    if (selectedFiles.length === 0) { showToast('Please select at least one image', 'error'); return; }
-
-    const progressBar  = document.getElementById('uploadProgressBar');
-    const progressFill = document.getElementById('uploadProgressFill');
-    const statusMsg    = document.getElementById('uploadStatusMsg');
-    const startBtn     = document.getElementById('startUploadBtn');
-
-    progressBar.style.display = 'block';
-    progressFill.style.width = '0%';
-    startBtn.disabled = true;
-    startBtn.textContent = 'Uploading...';
-
-    let successCount = 0;
-    let lastUrl = '';
-    const total = selectedFiles.length;
-
-    for (let i = 0; i < total; i++) {
-        const file = selectedFiles[i];
-        statusMsg.textContent = `Uploading ${i + 1}/${total}: ${file.name}`;
-        try {
-            const base64 = await compressImage(file);
-            const url = await uploadToGitHub(base64, file.name);
-            lastUrl = url;
-            successCount++;
-            progressFill.style.width = `${Math.round((successCount / total) * 100)}%`;
-            statusMsg.textContent = `✅ ${successCount}/${total} uploaded`;
-        } catch (err) {
-            console.error('Upload error:', err);
-            statusMsg.textContent = `❌ Failed: ${err.message}`;
-            showToast('❌ ' + err.message, 'error');
-        }
-    }
-
-    startBtn.disabled = false;
-    startBtn.textContent = 'Start Upload';
-
-    if (successCount > 0 && currentTargetInputId) {
-        const targetInput = document.getElementById(currentTargetInputId);
-        if (targetInput) {
-            targetInput.value = lastUrl;
-            updatePreviewForInput(currentTargetInputId, lastUrl);
-        }
-        statusMsg.innerHTML = `✅ Done! ${successCount} image(s) uploaded to GitHub. <strong>Click the Save button now.</strong>`;
-        showToast(`✅ ${successCount} image(s) uploaded! Now click Save.`, 'success');
-        setTimeout(closeUploadModal, 2500);
-    } else if (successCount === 0) {
-        statusMsg.textContent = '❌ Upload failed. Check your internet connection and try again.';
-    }
-}
-document.getElementById('startUploadBtn').addEventListener('click', startUpload);
-
-// Helper to update preview image based on input ID
-function updatePreviewForInput(inputId, imageUrl) {
-    // Try common preview IDs
-    const previewMap = {
-        'newProductImg': 'newProductPreview',
-        'mediaValueFull': 'newsImgPreview',
-        'logoUrl': 'logoPreview',
-        'heroImgUrl': 'heroImgPreview',
-        'companyImageUrl': 'companyImgPreview'
-    };
-    let previewId = previewMap[inputId];
-    if (!previewId) {
-        // fallback: replace 'Url' with 'Preview'
-        previewId = inputId.replace('Url', 'Preview');
-        if (previewId === inputId) previewId = inputId + 'Preview';
-    }
-    const previewEl = document.getElementById(previewId);
-    if(previewEl && imageUrl){
-        previewEl.src = imageUrl;
-        previewEl.classList.add('show');
-    }
-}
-
-// ==================== DATA LOAD/SAVE with normalization ====================
+// ===================== DEFAULT DATA =====================
 const DEFAULT_PRODUCTS = [
     { id:"p1", name:"Hydraulic Pumps & Motors", desc:"K3V112, K5V140, FOPFUJI brand. Fits CAT 320, PC200.", tags:["K3V112","K5V140","FOPFUJI"], img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600" },
     { id:"p2", name:"Engine Parts & Liner Kits", desc:"ISUZU 4HK1, 6HK1, PME brand liners, pistons, rings.", tags:["4HK1","6HK1","PME"], img:"https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600" },
@@ -550,304 +331,282 @@ const DEFAULT_NEWS = [
     { id:"n2", title:"PME 4HK1 Liner Kits Back in Stock", date:"2026-03-20", mediaType:"image", mediaValue:"https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=800", content:"Perfect for Isuzu 4HK1 engines, OEM quality." }
 ];
 const DEFAULT_COMPANY = {
-    logo: "https://placehold.co/180x44/0f172a/ffffff?text=EMP+PARTS",
-    heroImg: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600",
-    aboutText: "<p>Founded in 2012, EMP PARTS is a vertically integrated manufacturer and exporter of heavy equipment spare parts based in Shenyang, China.</p><p>Our proprietary brands — <strong>PME</strong> and <strong>FOPFUJI</strong> — set the benchmark for aftermarket quality.</p>",
-    aboutImg: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800",
-    phone: "+86 155 0242 1365",
-    email: "lina@empparts.com",
-    wechat: "empparts",
-    location: "Shenyang, China"
+    logo:"https://placehold.co/180x44/0f172a/ffffff?text=EMP+PARTS",
+    heroImg:"https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600",
+    aboutText:"<p>Founded in 2012, EMP PARTS is a vertically integrated manufacturer and exporter of heavy equipment spare parts based in Shenyang, China.</p><p>Our proprietary brands — <strong>PME</strong> and <strong>FOPFUJI</strong> — set the benchmark for aftermarket quality.</p>",
+    aboutImg:"https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800",
+    phone:"+86 155 0242 1365", email:"lina@empparts.com", wechat:"empparts", location:"Shenyang, China"
 };
 
-function loadAll(){
-    productsData = JSON.parse(localStorage.getItem(STORAGE_KEYS.products) || JSON.stringify(DEFAULT_PRODUCTS));
-    newsData = JSON.parse(localStorage.getItem(STORAGE_KEYS.news) || JSON.stringify(DEFAULT_NEWS));
-    messagesData = JSON.parse(localStorage.getItem(STORAGE_KEYS.messages) || '[]');
-    companyData = JSON.parse(localStorage.getItem(STORAGE_KEYS.company) || JSON.stringify(DEFAULT_COMPANY));
-    // Normalize all image URLs to full URLs
-    productsData.forEach(p => { p.img = normalizeImageUrl(p.img); });
-    newsData.forEach(n => { if(n.mediaType === 'image') n.mediaValue = normalizeImageUrl(n.mediaValue); });
-    companyData.logo = normalizeImageUrl(companyData.logo);
-    companyData.heroImg = normalizeImageUrl(companyData.heroImg);
-    companyData.aboutImg = normalizeImageUrl(companyData.aboutImg);
-}
-function saveAll(){
-    // Images are stored as short https:// GitHub Pages URLs, so localStorage size is tiny.
-    // Save each key independently so one failure doesn't block others.
-    const items = [
-        [STORAGE_KEYS.products, productsData],
-        [STORAGE_KEYS.news,     newsData],
-        [STORAGE_KEYS.messages, messagesData],
-        [STORAGE_KEYS.company,  companyData]
-    ];
-    let ok = true;
-    for (const [key, val] of items) {
-        try {
-            localStorage.setItem(key, JSON.stringify(val));
-        } catch(e) {
-            if (e.name === 'QuotaExceededError' || e.code === 22) {
-                showToast('⚠️ Storage full for ' + key + '. Delete old messages to free space.', 'error');
-            } else {
-                showToast('Save failed (' + key + '): ' + e.message, 'error');
-            }
-            ok = false;
+// ===================== GITHUB DATA LOAD/SAVE =====================
+// data.json in repo = single source of truth for ALL browsers & devices
+
+async function loadAll() {
+    document.getElementById('pageLoadingBar').style.display = 'block';
+    try {
+        const res = await fetch(DATA_RAW_URL + '?t=' + Date.now());
+        if(res.ok) {
+            const d = await res.json();
+            productsData = d.products || JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+            newsData     = d.news     || JSON.parse(JSON.stringify(DEFAULT_NEWS));
+            messagesData = d.messages || [];
+            companyData  = d.company  || JSON.parse(JSON.stringify(DEFAULT_COMPANY));
+        } else {
+            // data.json doesn't exist yet — first run, use defaults
+            productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+            newsData     = JSON.parse(JSON.stringify(DEFAULT_NEWS));
+            messagesData = []; companyData = JSON.parse(JSON.stringify(DEFAULT_COMPANY));
         }
+    } catch(e) {
+        console.warn('loadAll failed, using defaults:', e);
+        productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+        newsData     = JSON.parse(JSON.stringify(DEFAULT_NEWS));
+        messagesData = []; companyData = JSON.parse(JSON.stringify(DEFAULT_COMPANY));
     }
-    return ok;
+    document.getElementById('pageLoadingBar').style.display = 'none';
+    renderFront(); buildTrustBar();
 }
 
-// ==================== RENDER FRONT ====================
-function renderFront(){
-    renderProducts(); renderNews(); renderKeywords(); applyCompany();
+async function getDataSha() {
+    if(_dataSha) return _dataSha;
+    try {
+        const res = await fetch(DATA_API_URL, { headers:{ 'Authorization':'token '+GITHUB_CONFIG.token } });
+        if(res.ok){ const d=await res.json(); _dataSha=d.sha; return _dataSha; }
+    } catch(e){}
+    return null;
 }
+
+async function saveAll() {
+    const ind = document.getElementById('globalSaveIndicator');
+    if(ind){ ind.textContent='💾 Saving...'; ind.style.display='block'; }
+    const payload = { products:productsData, news:newsData, messages:messagesData, company:companyData, updated:new Date().toISOString() };
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
+    const sha = await getDataSha();
+    const body = { message:'Update: '+new Date().toLocaleString(), content:b64, branch:GITHUB_CONFIG.branch };
+    if(sha) body.sha = sha;
+    try {
+        const res = await fetch(DATA_API_URL, { method:'PUT', headers:{ 'Authorization':'token '+GITHUB_CONFIG.token, 'Content-Type':'application/json' }, body:JSON.stringify(body) });
+        if(res.ok) {
+            const d=await res.json(); _dataSha=d.content.sha;
+            showToast('✅ Saved! Visible on all browsers in ~1 min.');
+            if(ind){ ind.textContent='✅ Saved!'; setTimeout(()=>ind.style.display='none',2500); }
+            return true;
+        } else {
+            const err=await res.json().catch(()=>({}));
+            if(res.status===409){ _dataSha=null; showToast('Retrying...'); return await saveAll(); }
+            showToast('❌ Save failed: '+(err.message||res.statusText),'error');
+            if(ind) ind.style.display='none'; return false;
+        }
+    } catch(e) {
+        showToast('❌ Network error: '+e.message,'error');
+        if(ind) ind.style.display='none'; return false;
+    }
+}
+
+// ===================== IMAGE COMPRESS + GITHUB UPLOAD =====================
+function compressImage(file) {
+    return new Promise((resolve,reject)=>{
+        const reader=new FileReader(); reader.onerror=reject;
+        reader.onload=e=>{
+            const img=new Image(); img.onerror=reject;
+            img.onload=()=>{
+                let w=img.width,h=img.height;
+                if(w>1200){h=Math.round(h*1200/w);w=1200;}
+                const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+                canvas.getContext('2d').drawImage(img,0,0,w,h);
+                canvas.toBlob(blob=>{ const fr=new FileReader(); fr.onload=ev=>resolve(ev.target.result); fr.onerror=reject; fr.readAsDataURL(blob); },'image/jpeg',0.82);
+            };
+            img.src=e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+async function uploadToGitHub(b64DataUrl, origName) {
+    const b64=b64DataUrl.split(',')[1];
+    const ext=(origName.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+    const safe=origName.replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9_-]/g,'_').substring(0,40);
+    const filename=`${Date.now()}_${safe}.${ext}`;
+    const apiUrl=`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.folder}/${filename}`;
+    const res=await fetch(apiUrl,{method:'PUT',headers:{'Authorization':'token '+GITHUB_CONFIG.token,'Content-Type':'application/json'},body:JSON.stringify({message:'Upload: '+filename,content:b64,branch:GITHUB_CONFIG.branch})});
+    if(!res.ok){const e=await res.json().catch(()=>({})); throw new Error(e.message||res.statusText);}
+    return GITHUB_IMAGES_BASE+filename;
+}
+function openUploadModal(targetId){
+    currentTargetInputId=targetId; selectedFiles=[];
+    document.getElementById('uploadPreviewContainer').innerHTML='';
+    document.getElementById('uploadProgressBar').style.display='none';
+    document.getElementById('uploadProgressFill').style.width='0%';
+    document.getElementById('uploadStatusMsg').textContent='';
+    document.getElementById('startUploadBtn').disabled=false;
+    document.getElementById('startUploadBtn').textContent='⬆ Start Upload';
+    document.getElementById('uploadModal').classList.add('show');
+}
+function closeUploadModal(){ document.getElementById('uploadModal').classList.remove('show'); currentTargetInputId=null; selectedFiles=[]; }
+const dropArea=document.getElementById('dropArea');
+const fileInputModal=document.getElementById('fileInput');
+['dragenter','dragover','dragleave','drop'].forEach(ev=>dropArea.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();}));
+['dragenter','dragover'].forEach(ev=>dropArea.addEventListener(ev,()=>dropArea.classList.add('dragover')));
+['dragleave','drop'].forEach(ev=>dropArea.addEventListener(ev,()=>dropArea.classList.remove('dragover')));
+dropArea.addEventListener('drop',e=>handleFilesSelect(e.dataTransfer.files));
+fileInputModal.addEventListener('change',e=>handleFilesSelect(e.target.files));
+function handleFilesSelect(files){ const imgs=Array.from(files).filter(f=>f.type.startsWith('image/')); if(!imgs.length){showToast('Please select image files','error');return;} selectedFiles.push(...imgs); renderPreview(); }
+function renderPreview(){ document.getElementById('uploadPreviewContainer').innerHTML=selectedFiles.map((f,i)=>`<div class="preview-item"><img src="${URL.createObjectURL(f)}" class="preview-image"><div style="font-size:.75rem;margin-top:4px">${f.name.substring(0,22)}</div><div style="font-size:.7rem;color:#64748b">${(f.size/1024).toFixed(0)}KB</div><button class="btn-s btn-cancel" style="margin-top:4px" onclick="removeFile(${i})">✕</button></div>`).join(''); }
+function removeFile(idx){ selectedFiles.splice(idx,1); renderPreview(); }
+async function startUpload(){
+    if(!selectedFiles.length){showToast('Select at least one image','error');return;}
+    const bar=document.getElementById('uploadProgressBar'),fill=document.getElementById('uploadProgressFill'),msg=document.getElementById('uploadStatusMsg'),btn=document.getElementById('startUploadBtn');
+    bar.style.display='block'; fill.style.width='0%'; btn.disabled=true; btn.textContent='Uploading...';
+    let ok=0,lastUrl='';
+    for(let i=0;i<selectedFiles.length;i++){
+        const file=selectedFiles[i]; msg.textContent=`Uploading ${i+1}/${selectedFiles.length}: ${file.name}`;
+        try{ const b64=await compressImage(file); const url=await uploadToGitHub(b64,file.name); lastUrl=url; ok++; fill.style.width=`${Math.round(ok/selectedFiles.length*100)}%`; }
+        catch(err){ console.error(err); msg.textContent='❌ '+err.message; showToast('❌ '+err.message,'error'); }
+    }
+    btn.disabled=false; btn.textContent='⬆ Start Upload'; bar.style.display='none';
+    if(ok>0&&currentTargetInputId){ const t=document.getElementById(currentTargetInputId); if(t){t.value=lastUrl; updatePreviewForInput(currentTargetInputId,lastUrl);} msg.innerHTML=`✅ ${ok} uploaded. <strong>Click Save now.</strong>`; showToast(`✅ ${ok} image(s) uploaded! Click Save.`); setTimeout(closeUploadModal,2200); }
+    else if(!ok) msg.textContent='❌ Upload failed. Check internet connection.';
+}
+document.getElementById('startUploadBtn').addEventListener('click', startUpload);
+
+// Helper to update preview image based on input ID
+function updatePreviewForInput(inputId, imageUrl) {
+    const previewMap={'newProductImg':'newProductPreview','mediaValueFull':'newsImgPreview','logoUrl':'logoPreview','heroImgUrl':'heroImgPreview','companyImageUrl':'companyImgPreview'};
+    let pid=previewMap[inputId]||inputId.replace('Url','Preview');
+    const el=document.getElementById(pid);
+    if(el&&imageUrl){el.src=imageUrl;el.classList.add('show');}
+}
+
+// ===================== RENDER FRONT =====================
+function renderFront(){ renderProducts(); renderNews(); renderKeywords(); applyCompany(); }
 function renderProducts(){
-    const container = document.getElementById('productsGrid');
-    if(!container) return;
-    container.innerHTML = productsData.map(p=>`
-        <div class="product-card">
-            <img class="product-card-img" src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
-            <div class="product-card-body">
-                <h3>${esc(p.name)}</h3>
-                <p>${esc(p.desc)}</p>
-                <div class="tag-row">${p.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-                <a href="https://wa.me/8615502421365?text=Hi%2C+I+need+quote+for+${encodeURIComponent(p.name)}" class="product-inquiry" target="_blank">Get Quote →</a>
-            </div>
-        </div>`).join('');
+    const g=document.getElementById('productsGrid'); if(!g) return;
+    g.innerHTML=productsData.map(p=>`<div class="product-card"><img class="product-card-img" src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=No+Image'"><div class="product-card-body"><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p><div class="tag-row">${p.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div><a href="https://wa.me/8615502421365?text=Hi%2C+I+need+quote+for+${encodeURIComponent(p.name)}" class="product-inquiry" target="_blank">Get Quote →</a></div></div>`).join('');
 }
 function renderNews(){
-    const container = document.getElementById('newsGrid');
-    if(!container) return;
-    container.innerHTML = newsData.map(n=>{
-        let media = n.mediaType==='youtube' ? `<iframe src="https://www.youtube.com/embed/${n.mediaValue}" allowfullscreen></iframe>` :
-                    n.mediaType==='instagram' ? `<iframe src="${n.mediaValue}/embed" allowfullscreen></iframe>` :
-                    `<img src="${esc(n.mediaValue)}" alt="${esc(n.title)}" onerror="this.src='https://placehold.co/800x400?text=No+Image'">`;
-        return `<div class="news-card"><div class="news-media"><span class="news-badge">${n.mediaType==='youtube'?'VIDEO':'NEWS'}</span>${media}</div><div class="news-body"><div class="news-date">${n.date}</div><div class="news-title">${esc(n.title)}</div><div class="news-excerpt">${esc(n.content).substring(0,120)}…</div></div></div>`;
-    }).join('');
+    const g=document.getElementById('newsGrid'); if(!g) return;
+    g.innerHTML=newsData.map(n=>{ let media=n.mediaType==='youtube'?`<iframe src="https://www.youtube.com/embed/${n.mediaValue}" allowfullscreen></iframe>`:n.mediaType==='instagram'?`<iframe src="${n.mediaValue}/embed" allowfullscreen></iframe>`:`<img src="${esc(n.mediaValue)}" alt="${esc(n.title)}" onerror="this.src='https://placehold.co/800x400?text=No+Image'">`;
+    return `<div class="news-card"><div class="news-media"><span class="news-badge">${n.mediaType==='youtube'?'VIDEO':'NEWS'}</span>${media}</div><div class="news-body"><div class="news-date">${n.date}</div><div class="news-title">${esc(n.title)}</div><div class="news-excerpt">${esc(n.content).substring(0,120)}…</div></div></div>`; }).join('');
 }
-function renderKeywords(){
-    const kw = ["K3V112","TM40","4HK1","FOPFUJI","PME","CAT 320D","PC200","EX200"];
-    document.getElementById('kwCloud').innerHTML = kw.map(k=>`<span class="kw-item">${k}</span>`).join('');
-}
+function renderKeywords(){ const kw=["K3V112","TM40","4HK1","FOPFUJI","PME","CAT 320D","PC200","EX200"]; document.getElementById('kwCloud').innerHTML=kw.map(k=>`<span class="kw-item">${k}</span>`).join(''); }
 function applyCompany(){
     const d=companyData;
-    if(d.logo) document.getElementById('siteLogo').src = d.logo;
-    if(d.heroImg) document.getElementById('heroBg').style.background = `url('${d.heroImg}') center/cover no-repeat`;
-    if(d.aboutText) document.getElementById('aboutContent').innerHTML = d.aboutText;
-    if(d.aboutImg) document.getElementById('warehouseImg').src = d.aboutImg;
+    if(d.logo) document.getElementById('siteLogo').src=d.logo;
+    if(d.heroImg) document.getElementById('heroBg').style.background=`url('${d.heroImg}') center/cover no-repeat`;
+    if(d.aboutText) document.getElementById('aboutContent').innerHTML=d.aboutText;
+    if(d.aboutImg) document.getElementById('warehouseImg').src=d.aboutImg;
 }
 function buildTrustBar(){
     const items=["Factory Direct","30+ Countries","12,000m² Warehouse","OEM Quality","FOPFUJI Hydraulics","PME Engine Parts","48h Shipping"];
-    const bar = document.getElementById('trustScroll');
-    bar.innerHTML = items.map(i=>`<div class="trust-item"><i class="fas fa-check-circle"></i>${i}</div>`).join('') + items.map(i=>`<div class="trust-item"><i class="fas fa-check-circle"></i>${i}</div>`).join('');
+    const bar=document.getElementById('trustScroll');
+    bar.innerHTML=items.map(i=>`<div class="trust-item"><i class="fas fa-check-circle"></i>${i}</div>`).join('')+items.map(i=>`<div class="trust-item"><i class="fas fa-check-circle"></i>${i}</div>`).join('');
 }
 
-// ==================== ADMIN ====================
+// ===================== ADMIN =====================
 function renderAdminAll(){
     renderProductsAdmin(); renderNewsAdmin(); renderMessagesAdmin();
-    document.getElementById('statProducts').innerText = productsData.length;
-    document.getElementById('statNews').innerText = newsData.length;
-    document.getElementById('statMessages').innerText = messagesData.length;
-    // Show localStorage usage (should be tiny since images are URLs not base64)
-    try {
-        const kb = getLocalStorageUsedKB();
-        const el = document.getElementById('statStorage');
-        if (el) {
-            el.innerText = kb + ' KB';
-            el.style.color = kb > 3000 ? '#ef4444' : '#22c55e';
-        }
-    } catch(e) {}
+    document.getElementById('statProducts').innerText=productsData.length;
+    document.getElementById('statNews').innerText=newsData.length;
+    document.getElementById('statMessages').innerText=messagesData.length;
 }
 function renderProductsAdmin(){
-    const container = document.getElementById('productsListFull');
-    if(!container) return;
-    container.innerHTML = productsData.map((p,i)=>`
-        <div class="product-item"><div><strong>${esc(p.name)}</strong><br><img src="${esc(p.img)}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;margin:6px 0;"></div>
-        <div><button class="btn-s btn-edit" onclick="toggleProductEdit(${i})">Edit</button><button class="btn-s btn-del" onclick="deleteProduct(${i})">Delete</button></div>
-        <div id="pe-${i}" class="inline-edit"><input id="pe_name_${i}" value="${esc(p.name)}"><input id="pe_desc_${i}" value="${esc(p.desc)}"><input id="pe_tags_${i}" value="${p.tags.join(',')}"><div style="display:flex; gap:8px;"><input id="pe_img_${i}" value="${esc(p.img)}" style="flex:1"><button class="btn-s btn-upload" onclick="openUploadModal('pe_img_${i}')">Upload</button></div><button class="btn-s btn-save" onclick="saveProductEdit(${i})">Save</button><button class="btn-s btn-cancel" onclick="toggleProductEdit(${i})">Cancel</button></div></div>`).join('');
+    const g=document.getElementById('productsListFull'); if(!g) return;
+    g.innerHTML=productsData.map((p,i)=>`<div class="product-item"><div style="display:flex;align-items:center;gap:12px"><img src="${esc(p.img)}" style="width:70px;height:50px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0" onerror="this.src='https://placehold.co/70x50'"><div><strong>${esc(p.name)}</strong><div style="font-size:.78rem;color:#64748b">${esc(p.desc.substring(0,60))}</div></div></div><div style="margin-top:10px"><button class="btn-s btn-edit" onclick="toggleProductEdit(${i})">✏️ Edit</button><button class="btn-s btn-del" onclick="deleteProduct(${i})">🗑 Delete</button></div><div id="pe-${i}" class="inline-edit"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><input id="pe_name_${i}" value="${esc(p.name)}" placeholder="Name"><input id="pe_desc_${i}" value="${esc(p.desc)}" placeholder="Description"></div><input id="pe_tags_${i}" value="${p.tags.join(',')}" placeholder="Tags" style="width:100%;margin-bottom:10px"><div style="display:flex;gap:8px;margin-bottom:10px"><input id="pe_img_${i}" value="${esc(p.img)}" style="flex:1" placeholder="Image URL"><button class="btn-s btn-upload" onclick="openUploadModal('pe_img_${i}')">📤 Upload</button></div><button class="btn-s btn-save" onclick="saveProductEdit(${i})">✅ Save</button><button class="btn-s btn-cancel" onclick="toggleProductEdit(${i})">Cancel</button></div></div>`).join('');
 }
 function renderNewsAdmin(){
-    const container = document.getElementById('newsListFull');
-    if(!container) return;
-    container.innerHTML = newsData.map(n=>`<div><strong>${esc(n.title)}</strong> (${n.date})<button class="btn-s btn-edit" onclick="editNews('${n.id}')">Edit</button><button class="btn-s btn-del" onclick="deleteNews('${n.id}')">Delete</button></div>`).join('');
+    const g=document.getElementById('newsListFull'); if(!g) return;
+    g.innerHTML=newsData.map(n=>`<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:12px"><strong>${esc(n.title)}</strong><div style="font-size:.78rem;color:#64748b;margin:4px 0">${n.date} · ${n.mediaType}</div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn-s btn-edit" onclick="editNews('${n.id}')">✏️ Edit</button><button class="btn-s btn-del" onclick="deleteNews('${n.id}')">🗑 Delete</button></div></div>`).join('');
 }
 function renderMessagesAdmin(){
-    const container = document.getElementById('messagesListFull');
-    if(!container) return;
-    container.innerHTML = messagesData.map(m=>`<div><strong>${esc(m.name)}</strong> (${esc(m.email)})<br>${esc(m.content)}<button class="btn-s btn-del" onclick="deleteMessage('${m.id}')">Delete</button></div>`).join('');
+    const g=document.getElementById('messagesListFull'); if(!g) return;
+    if(!messagesData.length){g.innerHTML='<div style="text-align:center;padding:20px;color:#64748b">No messages yet.</div>';return;}
+    g.innerHTML=[...messagesData].reverse().map(m=>`<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:12px"><div style="display:flex;justify-content:space-between"><strong>${esc(m.name)}</strong><button class="btn-s btn-del" onclick="deleteMessage('${m.id}')">Delete</button></div><div style="font-size:.78rem;color:#64748b">${esc(m.email)} · ${m.date}</div>${m.part?`<div style="font-size:.78rem;color:#f97316;font-weight:700">Part: ${esc(m.part)}</div>`:''}<div style="font-size:.85rem;margin-top:6px">${esc(m.content)}</div></div>`).join('');
 }
-window.toggleProductEdit = function(i){ document.getElementById(`pe-${i}`).classList.toggle('show'); };
-window.saveProductEdit = function(i){
-    productsData[i].name = document.getElementById(`pe_name_${i}`).value.trim();
-    productsData[i].desc = document.getElementById(`pe_desc_${i}`).value.trim();
-    productsData[i].tags = document.getElementById(`pe_tags_${i}`).value.split(',').map(s=>s.trim());
-    let newImg = document.getElementById(`pe_img_${i}`).value.trim();
-    if(newImg) productsData[i].img = newImg;
-    if(saveAll()) { renderFront(); renderAdminAll(); showToast('Product updated'); }
+window.toggleProductEdit=function(i){ document.getElementById(`pe-${i}`).classList.toggle('show'); };
+window.saveProductEdit=async function(i){
+    productsData[i].name=document.getElementById(`pe_name_${i}`).value.trim();
+    productsData[i].desc=document.getElementById(`pe_desc_${i}`).value.trim();
+    productsData[i].tags=document.getElementById(`pe_tags_${i}`).value.split(',').map(s=>s.trim()).filter(Boolean);
+    let img=document.getElementById(`pe_img_${i}`).value.trim();
+    if(img&&img.startsWith('data:')){ showToast('⚠️ Upload image first','error'); return; }
+    if(img) productsData[i].img=normalizeImageUrl(img);
+    const ok=await saveAll(); if(ok){ renderFront(); renderAdminAll(); document.getElementById(`pe-${i}`).classList.remove('show'); }
 };
-window.deleteProduct = function(i){ if(confirm('Delete?')){ productsData.splice(i,1); saveAll(); renderFront(); renderAdminAll(); } };
-window.addProduct = function(){
-    const name = document.getElementById('newProductName').value.trim();
-    if(!name) return showToast('Name required','error');
-    let img = document.getElementById('newProductImg').value.trim();
-    if(img) img = normalizeImageUrl(img);
-    productsData.push({ id:'p'+Date.now(), name, desc:document.getElementById('newProductDesc').value, tags:document.getElementById('newProductTags').value.split(',').map(s=>s.trim()), img:img || 'https://placehold.co/600x400?text=New+Product' });
-    if(saveAll()) { renderFront(); renderAdminAll(); showToast('Product added'); }
-    document.getElementById('newProductName').value = '';
-    document.getElementById('newProductDesc').value = '';
-    document.getElementById('newProductTags').value = '';
-    document.getElementById('newProductImg').value = '';
-    document.getElementById('newProductPreview').classList.remove('show');
+window.deleteProduct=async function(i){ if(!confirm('Delete this product?')) return; productsData.splice(i,1); const ok=await saveAll(); if(ok){ renderFront(); renderAdminAll(); } };
+window.addProduct=async function(){
+    const name=document.getElementById('newProductName').value.trim(); if(!name) return showToast('Name required','error');
+    let img=document.getElementById('newProductImg').value.trim();
+    if(img&&img.startsWith('data:')){ showToast('⚠️ Upload image first','error'); return; }
+    if(img) img=normalizeImageUrl(img);
+    productsData.push({id:'p'+Date.now(),name,desc:document.getElementById('newProductDesc').value.trim(),tags:document.getElementById('newProductTags').value.split(',').map(s=>s.trim()).filter(Boolean),img:img||'https://placehold.co/600x400?text=Product'});
+    const ok=await saveAll(); if(ok){ renderFront(); renderAdminAll(); document.getElementById('newProductName').value=''; document.getElementById('newProductDesc').value=''; document.getElementById('newProductTags').value=''; document.getElementById('newProductImg').value=''; document.getElementById('newProductPreview').classList.remove('show'); }
 };
-window.editNews = function(id){
-    const n = newsData.find(x=>x.id===id);
-    if(!n) return;
-    editingNewsId = id;
-    document.getElementById('newsTitleFull').value = n.title;
-    document.getElementById('newsDateFull').value = n.date;
-    document.getElementById('mediaTypeFull').value = n.mediaType;
-    document.getElementById('mediaValueFull').value = n.mediaType === 'image' ? n.mediaValue : n.mediaValue;
-    document.getElementById('newsContentFull').value = n.content;
-    document.getElementById('addNewsBtn').innerHTML = 'Update News';
-    document.getElementById('cancelNewsBtn').style.display = 'inline-flex';
-    document.getElementById('newsTab').classList.add('active'); document.querySelector('.tab-btn[data-tab="newsTab"]').click();
+window.editNews=function(id){
+    const n=newsData.find(x=>x.id===id); if(!n) return; editingNewsId=id;
+    document.getElementById('newsTitleFull').value=n.title; document.getElementById('newsDateFull').value=n.date;
+    document.getElementById('mediaTypeFull').value=n.mediaType; document.getElementById('mediaValueFull').value=n.mediaValue;
+    document.getElementById('newsContentFull').value=n.content;
+    document.getElementById('addNewsBtn').innerHTML='Update News'; document.getElementById('cancelNewsBtn').style.display='inline-flex';
+    document.querySelector('.tab-btn[data-tab="newsTab"]').click();
 };
-window.cancelNewsEdit = function(){
-    editingNewsId = null;
-    document.getElementById('newsTitleFull').value = '';
-    document.getElementById('newsDateFull').value = '';
-    document.getElementById('mediaValueFull').value = '';
-    document.getElementById('newsContentFull').value = '';
-    document.getElementById('addNewsBtn').innerHTML = 'Save News';
-    document.getElementById('cancelNewsBtn').style.display = 'none';
+window.cancelNewsEdit=function(){
+    editingNewsId=null; document.getElementById('newsTitleFull').value=''; document.getElementById('newsDateFull').value='';
+    document.getElementById('mediaValueFull').value=''; document.getElementById('newsContentFull').value='';
+    document.getElementById('addNewsBtn').innerHTML='Save News'; document.getElementById('cancelNewsBtn').style.display='none';
 };
-window.saveNews = function(){
-    const title = document.getElementById('newsTitleFull').value.trim();
-    const date = document.getElementById('newsDateFull').value;
-    let mediaValue = document.getElementById('mediaValueFull').value.trim();
-    const mediaType = document.getElementById('mediaTypeFull').value;
-    const content = document.getElementById('newsContentFull').value.trim();
-    if(!title||!date||!content) return showToast('Fill all fields','error');
-    if(mediaType === 'image' && mediaValue) mediaValue = normalizeImageUrl(mediaValue);
-    const obj = { id:editingNewsId || ('n'+Date.now()), title, date, mediaType, mediaValue, content };
-    if(editingNewsId){
-        const idx = newsData.findIndex(x=>x.id===editingNewsId);
-        if(idx>=0) newsData[idx] = obj;
-    } else newsData.unshift(obj);
-    if(saveAll()) { renderFront(); renderAdminAll(); cancelNewsEdit(); showToast('News saved'); }
+window.saveNews=async function(){
+    const title=document.getElementById('newsTitleFull').value.trim(), date=document.getElementById('newsDateFull').value;
+    let mediaValue=document.getElementById('mediaValueFull').value.trim();
+    const mediaType=document.getElementById('mediaTypeFull').value, content=document.getElementById('newsContentFull').value.trim();
+    if(!title||!date||!content) return showToast('Fill all required fields','error');
+    if(mediaType==='image'&&mediaValue&&mediaValue.startsWith('data:')){ showToast('⚠️ Upload image first','error'); return; }
+    if(mediaType==='image'&&mediaValue) mediaValue=normalizeImageUrl(mediaValue);
+    const obj={id:editingNewsId||('n'+Date.now()),title,date,mediaType,mediaValue,content};
+    if(editingNewsId){const idx=newsData.findIndex(x=>x.id===editingNewsId);if(idx>=0)newsData[idx]=obj;}else newsData.unshift(obj);
+    const ok=await saveAll(); if(ok){ renderFront(); renderAdminAll(); cancelNewsEdit(); }
 };
-window.deleteNews = function(id){
-    if(confirm('Delete?')){ newsData = newsData.filter(x=>x.id!==id); saveAll(); renderFront(); renderAdminAll(); }
-};
-window.deleteMessage = function(id){
-    messagesData = messagesData.filter(m=>m.id!==id);
-    saveAll(); renderMessagesAdmin();
-};
-window.saveLogo = function(){ 
-    let newLogo = document.getElementById('logoUrl').value.trim();
-    if(newLogo) companyData.logo = normalizeImageUrl(newLogo);
-    if(saveAll()) { applyCompany(); showToast('Logo updated'); }
-};
-window.saveHeroImg = function(){
-    let newHero = document.getElementById('heroImgUrl').value.trim();
-    if(newHero) companyData.heroImg = normalizeImageUrl(newHero);
-    if(saveAll()) { applyCompany(); showToast('Hero updated'); }
-};
-window.saveCompanyText = function(){ 
-    companyData.aboutText = document.getElementById('companyAboutText').value; 
-    if(saveAll()) { applyCompany(); showToast('About text saved'); }
-};
-window.saveCompanyImage = function(){
-    let newImg = document.getElementById('companyImageUrl').value.trim();
-    if(newImg) companyData.aboutImg = normalizeImageUrl(newImg);
-    if(saveAll()) { applyCompany(); showToast('About image saved'); }
-};
-window.saveContact = function(){
-    companyData.phone = document.getElementById('contactPhone').value;
-    companyData.email = document.getElementById('contactEmail').value;
-    companyData.wechat = document.getElementById('contactWechat').value;
-    companyData.location = document.getElementById('contactLocation').value;
-    saveAll(); showToast('Contact saved');
-};
-window.exportBackup = function(){
-    const data = { products:productsData, news:newsData, messages:messagesData, company:companyData };
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-    a.download = `empparts-backup-${new Date().toISOString().slice(0,10)}.json`;
-    a.click(); showToast('Backup exported');
-};
-window.importBackup = function(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = ev=>{
-        try{
-            const d = JSON.parse(ev.target.result);
-            if(d.products) productsData = d.products;
-            if(d.news) newsData = d.news;
-            if(d.messages) messagesData = d.messages;
-            if(d.company) companyData = d.company;
-            if(saveAll()) { renderFront(); renderAdminAll(); showToast('Import success'); }
-        }catch(err){ showToast('Invalid file','error'); }
-    };
-    reader.readAsText(file);
-};
-window.resetAllData = function(){
-    if(!confirm('Reset ALL data to defaults? This cannot be undone.')) return;
-    localStorage.clear();
-    loadAll(); saveAll(); renderFront(); renderAdminAll(); showToast('Reset complete');
-};
+window.deleteNews=async function(id){ if(!confirm('Delete this news post?')) return; newsData=newsData.filter(x=>x.id!==id); const ok=await saveAll(); if(ok){ renderFront(); renderAdminAll(); } };
+window.deleteMessage=async function(id){ messagesData=messagesData.filter(m=>m.id!==id); const ok=await saveAll(); if(ok) renderMessagesAdmin(); };
+window.saveLogo=async function(){ let v=document.getElementById('logoUrl').value.trim(); if(v&&v.startsWith('data:')){ showToast('⚠️ Upload first','error');return; } if(v) companyData.logo=normalizeImageUrl(v); await saveAll(); applyCompany(); };
+window.saveHeroImg=async function(){ let v=document.getElementById('heroImgUrl').value.trim(); if(v&&v.startsWith('data:')){ showToast('⚠️ Upload first','error');return; } if(v) companyData.heroImg=normalizeImageUrl(v); await saveAll(); applyCompany(); };
+window.saveCompanyText=async function(){ companyData.aboutText=document.getElementById('companyAboutText').value; await saveAll(); applyCompany(); };
+window.saveCompanyImage=async function(){ let v=document.getElementById('companyImageUrl').value.trim(); if(v&&v.startsWith('data:')){ showToast('⚠️ Upload first','error');return; } if(v) companyData.aboutImg=normalizeImageUrl(v); await saveAll(); applyCompany(); };
+window.saveContact=async function(){ companyData.phone=document.getElementById('contactPhone').value; companyData.email=document.getElementById('contactEmail').value; companyData.wechat=document.getElementById('contactWechat').value; companyData.location=document.getElementById('contactLocation').value; await saveAll(); };
+window.exportBackup=function(){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({products:productsData,news:newsData,messages:messagesData,company:companyData},null,2)],{type:'application/json'})); a.download=`empparts-backup-${new Date().toISOString().slice(0,10)}.json`; a.click(); showToast('Backup exported'); };
+window.importBackup=async function(e){ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=async ev=>{ try{ const d=JSON.parse(ev.target.result); if(d.products) productsData=d.products; if(d.news) newsData=d.news; if(d.messages) messagesData=d.messages; if(d.company) companyData=d.company; _dataSha=null; const ok=await saveAll(); if(ok){ renderFront(); renderAdminAll(); showToast('Import success'); } }catch(err){ showToast('Invalid file','error'); } }; reader.readAsText(file); };
+window.resetAllData=async function(){ if(!confirm('Reset ALL data to defaults?')) return; productsData=JSON.parse(JSON.stringify(DEFAULT_PRODUCTS)); newsData=JSON.parse(JSON.stringify(DEFAULT_NEWS)); messagesData=[]; companyData=JSON.parse(JSON.stringify(DEFAULT_COMPANY)); _dataSha=null; const ok=await saveAll(); if(ok){ renderFront(); renderAdminAll(); showToast('Reset complete'); } };
 
-// ==================== AUTH ====================
+// ===================== AUTH =====================
 function checkPassword(){
-    const pwd = document.getElementById('adminPassword').value;
-    if(pwd === ADMIN_PASSWORD){
-        isAdmin = true;
-        sessionStorage.setItem('emp_admin', '1'); // remember login for this browser session
+    const pwd=document.getElementById('adminPassword').value;
+    if(pwd===ADMIN_PASSWORD){
+        isAdmin=true; sessionStorage.setItem('emp_admin','1');
         document.getElementById('passwordModal').classList.remove('show');
         document.getElementById('adminOverlay').classList.add('show');
-        populateAdminForms();
-        renderAdminAll();
-    } else {
-        showToast('Wrong password','error');
-        document.getElementById('adminPassword').value = '';
-    }
+        populateAdminForms(); renderAdminAll();
+    } else { showToast('Wrong password','error'); document.getElementById('adminPassword').value=''; }
 }
 function populateAdminForms(){
-    document.getElementById('logoUrl').value = companyData.logo || '';
-    document.getElementById('heroImgUrl').value = companyData.heroImg || '';
-    document.getElementById('companyAboutText').value = companyData.aboutText || '';
-    document.getElementById('companyImageUrl').value = companyData.aboutImg || '';
-    document.getElementById('contactPhone').value = companyData.phone || '';
-    document.getElementById('contactEmail').value = companyData.email || '';
-    document.getElementById('contactWechat').value = companyData.wechat || '';
-    document.getElementById('contactLocation').value = companyData.location || '';
+    document.getElementById('logoUrl').value=companyData.logo||'';
+    document.getElementById('heroImgUrl').value=companyData.heroImg||'';
+    document.getElementById('companyAboutText').value=companyData.aboutText||'';
+    document.getElementById('companyImageUrl').value=companyData.aboutImg||'';
+    document.getElementById('contactPhone').value=companyData.phone||'';
+    document.getElementById('contactEmail').value=companyData.email||'';
+    document.getElementById('contactWechat').value=companyData.wechat||'';
+    document.getElementById('contactLocation').value=companyData.location||'';
 }
 function openAdmin(){
-    // Auto-restore login if same browser session
-    if(!isAdmin && sessionStorage.getItem('emp_admin') === '1'){
-        isAdmin = true;
-    }
-    if(!isAdmin){
-        document.getElementById('passwordModal').classList.add('show');
-        setTimeout(()=>document.getElementById('adminPassword').focus(), 100);
-    } else {
-        document.getElementById('adminOverlay').classList.add('show');
-        populateAdminForms();
-        renderAdminAll();
-    }
+    if(!isAdmin&&sessionStorage.getItem('emp_admin')==='1') isAdmin=true;
+    if(!isAdmin){ document.getElementById('passwordModal').classList.add('show'); setTimeout(()=>document.getElementById('adminPassword').focus(),100); }
+    else{ document.getElementById('adminOverlay').classList.add('show'); populateAdminForms(); renderAdminAll(); }
 }
 function closeAdmin(){ document.getElementById('adminOverlay').classList.remove('show'); }
-function logoutAdmin(){
-    isAdmin = false;
-    sessionStorage.removeItem('emp_admin');
-    closeAdmin();
-    showToast('Logged out');
-}
+function logoutAdmin(){ isAdmin=false; sessionStorage.removeItem('emp_admin'); closeAdmin(); showToast('Logged out'); }
+function checkEnvironment(){ const el=document.getElementById('envWarning'); if(el) el.style.display='none'; }
 function initTabs(){
     document.querySelectorAll('.tab-btn').forEach(btn=>{
         btn.addEventListener('click',()=>{
-            const id = btn.getAttribute('data-tab');
+            const id=btn.getAttribute('data-tab');
             document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -857,22 +616,19 @@ function initTabs(){
 }
 document.getElementById('adminBtn').addEventListener('click',openAdmin);
 document.getElementById('closeAdminBtn').addEventListener('click',closeAdmin);
-document.getElementById('wechatBtn').addEventListener('click',()=>{
-    navigator.clipboard.writeText(companyData.wechat||'empparts').then(()=>showToast('WeChat ID copied'));
-});
-document.getElementById('quickMessageForm').addEventListener('submit',function(e){
+document.getElementById('wechatBtn').addEventListener('click',()=>{ navigator.clipboard.writeText(companyData.wechat||'empparts').then(()=>showToast('WeChat ID copied')); });
+document.getElementById('quickMessageForm').addEventListener('submit',async function(e){
     e.preventDefault();
-    const name = document.getElementById('msgName').value.trim();
-    const email = document.getElementById('msgEmail').value.trim();
-    const part = document.getElementById('msgPart').value.trim();
-    const content = document.getElementById('msgContent').value.trim();
+    const name=document.getElementById('msgName').value.trim(), email=document.getElementById('msgEmail').value.trim();
+    const part=document.getElementById('msgPart').value.trim(), content=document.getElementById('msgContent').value.trim();
     if(!name||!email||!content) return;
-    messagesData.push({ id:'m'+Date.now(), name, email, part, content, date:new Date().toLocaleDateString() });
-    saveAll(); renderMessagesAdmin();
-    document.getElementById('msgStatus').innerHTML = '<span style="color:#22c55e">Message sent! We\'ll reply soon.</span>';
-    this.reset(); setTimeout(()=>document.getElementById('msgStatus').innerHTML='',4000);
+    messagesData.push({id:'m'+Date.now(),name,email,part,content,date:new Date().toLocaleDateString()});
+    const ok=await saveAll();
+    if(ok){ document.getElementById('msgStatus').innerHTML='<span style="color:#22c55e">✅ Message sent! We'll reply soon.</span>'; this.reset(); setTimeout(()=>document.getElementById('msgStatus').innerHTML='',4000); }
 });
-loadAll(); saveAll(); renderFront(); buildTrustBar(); initTabs(); checkEnvironment();
+
+// ===================== INIT =====================
+initTabs(); checkEnvironment(); loadAll();
 </script>
 </body>
 </html>
