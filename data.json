@@ -32,6 +32,15 @@
         "Final Drive"
       ],
       "img": "https://pro-excavator.github.io/emp-parts/images/1776552802231_1776229344817.png"
+    },
+    {
+      "id": "p1776553082366",
+      "name": "swing motor",
+      "desc": "",
+      "tags": [
+        "cat swing motor"
+      ],
+      "img": "https://pro-excavator.github.io/emp-parts/images/1776553036701_IMG20180804110553.jpg"
     }
   ],
   "news": [
@@ -63,5 +72,5 @@
     "wechat": "empparts",
     "location": "Shenyang, China"
   },
-  "updated": "2026-04-18T22:53:25.008Z"
+  "updated": "2026-04-18T22:58:02.366Z"
 }
