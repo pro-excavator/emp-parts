@@ -273,7 +273,17 @@ let selectedFile = null;
 
 // Helper functions
 function esc(s){ return String(s||'').replace(/[&<>]/g,function(m){return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;';}); }
-function showToast(msg, type='success'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'; setTimeout(()=>t.className='toast',3000); }
+function showToast(msg, type='success'){ 
+    const t=document.getElementById('toast'); 
+    t.textContent=msg; 
+    t.className='toast show'; 
+    t.style.backgroundColor = type === 'error' ? '#ef4444' : 'var(--steel)';
+    setTimeout(()=>{ t.className='toast'; t.style.backgroundColor=''; }, 3000); 
+}
+function getImgUrl(url){ 
+    if(!url) return ''; 
+    return (url.startsWith('http') || url.startsWith('data:')) ? url : 'images/' + url; 
+}
 
 // ==================== IMAGE UPLOAD (Base64 compression only, no Firebase) ====================
 function openUploadModal(targetId){
@@ -328,16 +338,16 @@ async function startUpload(){
             const targetInput = document.getElementById(currentTargetInputId);
             if(targetInput){
                 targetInput.value = compressedBase64;
-                // Preview update
-                const previewId = currentTargetInputId.replace('Url','Preview');
+                
+                // Preview update (Fixed ID mapping bug)
+                let previewId = currentTargetInputId.replace('Url','Preview');
+                if (currentTargetInputId === 'newProductImg') previewId = 'newProductPreview';
+                if (currentTargetInputId === 'mediaValueFull') previewId = 'newsImgPreview';
+                
                 const previewEl = document.getElementById(previewId);
-                if(previewEl){ previewEl.src = compressedBase64; previewEl.classList.add('show'); }
-                else{
-                    const candidates = ['newProductPreview', 'newsImgPreview', 'logoPreview', 'heroImgPreview', 'companyImgPreview'];
-                    for(let id of candidates){
-                        const p = document.getElementById(id);
-                        if(p){ p.src = compressedBase64; p.classList.add('show'); break; }
-                    }
+                if(previewEl && previewEl.tagName === 'IMG'){ 
+                    previewEl.src = compressedBase64; 
+                    previewEl.classList.add('show'); 
                 }
             }
         }
@@ -408,10 +418,16 @@ function loadAll(){
     companyData = JSON.parse(localStorage.getItem(STORAGE_KEYS.company) || JSON.stringify(DEFAULT_COMPANY));
 }
 function saveAll(){
-    localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(productsData));
-    localStorage.setItem(STORAGE_KEYS.news, JSON.stringify(newsData));
-    localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messagesData));
-    localStorage.setItem(STORAGE_KEYS.company, JSON.stringify(companyData));
+    try {
+        localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(productsData));
+        localStorage.setItem(STORAGE_KEYS.news, JSON.stringify(newsData));
+        localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messagesData));
+        localStorage.setItem(STORAGE_KEYS.company, JSON.stringify(companyData));
+    } catch (err) {
+        console.error("Storage error:", err);
+        showToast('Save failed! Storage full. Please use external URLs.', 'error');
+        throw err; // Stop further execution on error
+    }
 }
 
 // ==================== RENDER FRONT ====================
@@ -423,7 +439,7 @@ function renderProducts(){
     if(!container) return;
     container.innerHTML = productsData.map(p=>`
         <div class="product-card">
-            <img class="product-card-img" src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+            <img class="product-card-img" src="${esc(getImgUrl(p.img))}" alt="${esc(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
             <div class="product-card-body">
                 <h3>${esc(p.name)}</h3>
                 <p>${esc(p.desc)}</p>
@@ -436,9 +452,10 @@ function renderNews(){
     const container = document.getElementById('newsGrid');
     if(!container) return;
     container.innerHTML = newsData.map(n=>{
+        let mediaUrl = getImgUrl(n.mediaValue);
         let media = n.mediaType==='youtube' ? `<iframe src="https://www.youtube.com/embed/${n.mediaValue}" allowfullscreen></iframe>` :
                     n.mediaType==='instagram' ? `<iframe src="${n.mediaValue}/embed" allowfullscreen></iframe>` :
-                    `<img src="${n.mediaValue}" alt="${esc(n.title)}" onerror="this.src='https://placehold.co/800x400?text=No+Image'">`;
+                    `<img src="${mediaUrl}" alt="${esc(n.title)}" onerror="this.src='https://placehold.co/800x400?text=No+Image'">`;
         return `<div class="news-card"><div class="news-media"><span class="news-badge">${n.mediaType==='youtube'?'VIDEO':'NEWS'}</span>${media}</div><div class="news-body"><div class="news-date">${n.date}</div><div class="news-title">${esc(n.title)}</div><div class="news-excerpt">${esc(n.content).substring(0,120)}…</div></div></div>`;
     }).join('');
 }
@@ -448,10 +465,10 @@ function renderKeywords(){
 }
 function applyCompany(){
     const d=companyData;
-    if(d.logo) document.getElementById('siteLogo').src = d.logo;
-    if(d.heroImg) document.getElementById('heroBg').style.background = `url('${d.heroImg}') center/cover no-repeat`;
+    if(d.logo) document.getElementById('siteLogo').src = getImgUrl(d.logo);
+    if(d.heroImg) document.getElementById('heroBg').style.background = `url('${getImgUrl(d.heroImg)}') center/cover no-repeat`;
     if(d.aboutText) document.getElementById('aboutContent').innerHTML = d.aboutText;
-    if(d.aboutImg) document.getElementById('warehouseImg').src = d.aboutImg;
+    if(d.aboutImg) document.getElementById('warehouseImg').src = getImgUrl(d.aboutImg);
 }
 function buildTrustBar(){
     const items=["Factory Direct","30+ Countries","12,000m² Warehouse","OEM Quality","FOPFUJI Hydraulics","PME Engine Parts","48h Shipping"];
@@ -470,7 +487,7 @@ function renderProductsAdmin(){
     const container = document.getElementById('productsListFull');
     if(!container) return;
     container.innerHTML = productsData.map((p,i)=>`
-        <div class="product-item"><div><strong>${esc(p.name)}</strong><br><img src="${esc(p.img)}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;margin:6px 0;"></div>
+        <div class="product-item"><div><strong>${esc(p.name)}</strong><br><img src="${esc(getImgUrl(p.img))}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;margin:6px 0;"></div>
         <div><button class="btn-s btn-edit" onclick="toggleProductEdit(${i})">Edit</button><button class="btn-s btn-del" onclick="deleteProduct(${i})">Delete</button></div>
         <div id="pe-${i}" class="inline-edit"><input id="pe_name_${i}" value="${esc(p.name)}"><input id="pe_desc_${i}" value="${esc(p.desc)}"><input id="pe_tags_${i}" value="${p.tags.join(',')}"><div style="display:flex; gap:8px;"><input id="pe_img_${i}" value="${esc(p.img)}" style="flex:1"><button class="btn-s btn-upload" onclick="openUploadModal('pe_img_${i}')">Upload</button></div><button class="btn-s btn-save" onclick="saveProductEdit(${i})">Save</button><button class="btn-s btn-cancel" onclick="toggleProductEdit(${i})">Cancel</button></div></div>`).join('');
 }
