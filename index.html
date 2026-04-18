@@ -231,7 +231,7 @@
 <footer><div class="container"><div class="footer-grid"><div class="footer-brand"><div class="footer-logo-text"><span>EMP</span> PARTS</div><p>China's trusted manufacturer and exporter of excavator spare parts.</p></div><div class="footer-col"><h5>Products</h5><a href="#products">Hydraulic Pumps</a><a href="#products">Travel Motors</a><a href="#products">Engine Parts</a></div><div class="footer-col"><h5>Brands</h5><a href="#products">FOPFUJI Hydraulic</a><a href="#products">PME Engine Parts</a></div><div class="footer-col"><h5>Contact</h5><p>+86 155 0242 1365</p><p>lina@empparts.com</p><p>WeChat: empparts</p></div></div><div class="footer-bottom"><p>© 2026 EMP PARTS CO., LTD. All Rights Reserved.</p></div></div></footer>
 
 <!-- Admin Overlay -->
-<div id="adminOverlay" class="admin-overlay"><div class="admin-container"><div class="admin-header"><h2>EMP PARTS — Admin Panel</h2><div><button class="btn-s btn-save" onclick="exportBackup()">Export Backup</button><button class="btn-s btn-cancel" onclick="document.getElementById('importFileInput').click()">Import</button><input type="file" id="importFileInput" style="display:none" accept=".json"><button class="admin-close" id="closeAdminBtn">✕</button></div></div>
+<div id="adminOverlay" class="admin-overlay"><div class="admin-container"><div class="admin-header"><h2>EMP PARTS — Admin Panel</h2><div><button class="btn-s btn-save" onclick="exportBackup()">Export Backup</button><button class="btn-s btn-cancel" onclick="document.getElementById('importFileInput').click()">Import</button><input type="file" id="importFileInput" style="display:none" accept=".json"><button class="btn-s" style="background:#64748b;color:white" onclick="logoutAdmin()">🔒 Logout</button><button class="admin-close" id="closeAdminBtn">✕</button></div></div>
 <div class="admin-tabs"><button class="tab-btn active" data-tab="dashTab">📊 Dashboard</button><button class="tab-btn" data-tab="productsTab">📦 Products</button><button class="tab-btn" data-tab="newsTab">📰 News</button><button class="tab-btn" data-tab="companyTab">🏢 Company</button><button class="tab-btn" data-tab="messagesTab">💬 Messages</button><button class="tab-btn" data-tab="backupTab">💾 Backup</button></div>
 
 <div id="dashTab" class="tab-content active"><div class="stats-row"><div class="stat-box"><strong id="statProducts">0</strong><span>Products</span></div><div class="stat-box"><strong id="statNews">0</strong><span>News</span></div><div class="stat-box"><strong id="statMessages">0</strong><span>Messages</span></div><div class="stat-box"><strong id="statStorage" style="color:#22c55e">0 KB</strong><span>Storage Used</span></div></div>
@@ -803,11 +803,15 @@ function checkPassword(){
     const pwd = document.getElementById('adminPassword').value;
     if(pwd === ADMIN_PASSWORD){
         isAdmin = true;
+        sessionStorage.setItem('emp_admin', '1'); // remember login for this browser session
         document.getElementById('passwordModal').classList.remove('show');
         document.getElementById('adminOverlay').classList.add('show');
         populateAdminForms();
         renderAdminAll();
-    } else showToast('Wrong password','error');
+    } else {
+        showToast('Wrong password','error');
+        document.getElementById('adminPassword').value = '';
+    }
 }
 function populateAdminForms(){
     document.getElementById('logoUrl').value = companyData.logo || '';
@@ -820,10 +824,26 @@ function populateAdminForms(){
     document.getElementById('contactLocation').value = companyData.location || '';
 }
 function openAdmin(){
-    if(!isAdmin) document.getElementById('passwordModal').classList.add('show');
-    else { document.getElementById('adminOverlay').classList.add('show'); populateAdminForms(); renderAdminAll(); }
+    // Auto-restore login if same browser session
+    if(!isAdmin && sessionStorage.getItem('emp_admin') === '1'){
+        isAdmin = true;
+    }
+    if(!isAdmin){
+        document.getElementById('passwordModal').classList.add('show');
+        setTimeout(()=>document.getElementById('adminPassword').focus(), 100);
+    } else {
+        document.getElementById('adminOverlay').classList.add('show');
+        populateAdminForms();
+        renderAdminAll();
+    }
 }
 function closeAdmin(){ document.getElementById('adminOverlay').classList.remove('show'); }
+function logoutAdmin(){
+    isAdmin = false;
+    sessionStorage.removeItem('emp_admin');
+    closeAdmin();
+    showToast('Logged out');
+}
 function initTabs(){
     document.querySelectorAll('.tab-btn').forEach(btn=>{
         btn.addEventListener('click',()=>{
