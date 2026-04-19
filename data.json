@@ -41,6 +41,18 @@
         "cat swing motor"
       ],
       "img": "https://pro-excavator.github.io/emp-parts/images/1776553036701_IMG20180804110553.jpg"
+    },
+    {
+      "id": "p1776583285772",
+      "name": "travel device",
+      "desc": "tm40 tm09 tm02 tm03 tm06 tm06",
+      "tags": [
+        "tm02",
+        "tm70",
+        "tm40",
+        "etc"
+      ],
+      "img": "https://pro-excavator.github.io/emp-parts/images/1776583161529_mmexport1741666445528.jpg"
     }
   ],
   "news": [
@@ -80,5 +92,5 @@
     "wechat": "empparts",
     "location": "Shenyang, China"
   },
-  "updated": "2026-04-19T07:15:59.920Z"
+  "updated": "2026-04-19T07:21:25.773Z"
 }
