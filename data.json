@@ -35,10 +35,10 @@
     },
     {
       "id": "p1776553082366",
-      "name": "swing motor",
-      "desc": "330D.320C etc",
+      "name": "control valve",
+      "desc": "available in different models",
       "tags": [
-        "cat swing motor"
+        "xcmg sany hyundai kobelco etc"
       ],
       "img": "https://pro-excavator.github.io/emp-parts/images/1776583339670_mmexport1775739368313.jpg"
     },
@@ -92,5 +92,5 @@
     "wechat": "empparts",
     "location": "Shenyang, China"
   },
-  "updated": "2026-04-19T07:23:40.642Z"
+  "updated": "2026-04-19T07:24:32.929Z"
 }
