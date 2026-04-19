@@ -53,6 +53,15 @@
         "etc"
       ],
       "img": "https://pro-excavator.github.io/emp-parts/images/1776583161529_mmexport1741666445528.jpg"
+    },
+    {
+      "id": "p1776583597532",
+      "name": "Kawasaki hydraulic parts. kpm genuine parts",
+      "desc": "k3v113 k5v160 k5v200 k5v212",
+      "tags": [
+        "hydraulic parts"
+      ],
+      "img": "https://pro-excavator.github.io/emp-parts/images/1776583519874_mmexport1776583507373.jpg"
     }
   ],
   "news": [
@@ -92,5 +101,5 @@
     "wechat": "empparts",
     "location": "Shenyang, China"
   },
-  "updated": "2026-04-19T07:24:32.929Z"
+  "updated": "2026-04-19T07:26:37.532Z"
 }
