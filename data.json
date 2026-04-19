@@ -62,6 +62,24 @@
         "hydraulic parts"
       ],
       "img": "https://pro-excavator.github.io/emp-parts/images/1776583519874_mmexport1776583507373.jpg"
+    },
+    {
+      "id": "p1776583715511",
+      "name": "swing device final drive",
+      "desc": "gearbox reduction",
+      "tags": [
+        "excavator spare parts"
+      ],
+      "img": "https://pro-excavator.github.io/emp-parts/images/1776583665827_mmexport1776583653908.jpg"
+    },
+    {
+      "id": "p1776583846283",
+      "name": "swing device final drive",
+      "desc": "gearbox reduction",
+      "tags": [
+        "excavator spare parts"
+      ],
+      "img": "https://pro-excavator.github.io/emp-parts/images/1776583820328_mmexport1776583653908.jpg"
     }
   ],
   "news": [
@@ -101,5 +119,5 @@
     "wechat": "empparts",
     "location": "Shenyang, China"
   },
-  "updated": "2026-04-19T07:26:37.532Z"
+  "updated": "2026-04-19T07:30:46.283Z"
 }
