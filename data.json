@@ -84,6 +84,14 @@
   ],
   "news": [
     {
+      "id": "n1776584054175",
+      "title": "engine model PME",
+      "date": "2026-04-01",
+      "mediaType": "image",
+      "mediaValue": "https://pro-excavator.github.io/emp-parts/images/1776584001560_IMG_20241123_235629.jpg",
+      "content": "PME engine parts available in different modes"
+    },
+    {
       "id": "n1776555630553",
       "title": "ISUZU GENUINE PARTS TRUCK PARTS",
       "date": "2026-04-18",
@@ -119,5 +127,5 @@
     "wechat": "empparts",
     "location": "Shenyang, China"
   },
-  "updated": "2026-04-19T07:32:20.223Z"
+  "updated": "2026-04-19T07:34:14.175Z"
 }
