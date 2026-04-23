@@ -84,12 +84,12 @@
   ],
   "news": [
     {
-      "id": "n1776933132241",
-      "title": "6BG1 ENGINE ASSY DELIVERY EMP",
+      "id": "n1776933218072",
+      "title": "6BG1 ENGINE ASSY",
       "date": "2026-04-23",
       "mediaType": "image",
-      "mediaValue": "https://pro-excavator.github.io/emp-parts/images/1776933090470_6BG1_ENGINE_ASSY_DELIVERY.png",
-      "content": "6BG1 ZX200 ENGINE ASSY REMANUFACTURED DELIVERY"
+      "mediaValue": "https://pro-excavator.github.io/emp-parts/images/1776933172871_6BG1_ENGINE_ASSY_DELIVERY.png",
+      "content": "6BG1 ENGINE ASSY"
     },
     {
       "id": "n1776584054175",
@@ -135,5 +135,5 @@
     "wechat": "empparts",
     "location": "Shenyang, China"
   },
-  "updated": "2026-04-23T08:32:12.241Z"
+  "updated": "2026-04-23T08:33:38.072Z"
 }
